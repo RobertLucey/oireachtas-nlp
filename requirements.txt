@@ -1,0 +1,5 @@
+oireachtas_data
+gensim
+nltk
+cached_property
+sklearn_pandas
