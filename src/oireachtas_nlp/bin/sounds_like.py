@@ -32,8 +32,6 @@ class AltClassifierCreator(ClassifierCreator):
                     continue
                 if 'Taoiseach' in speaker:
                     continue
-                if '#' not in speaker:
-                    continue
 
                 content_str = '\n\n'.join(
                     [
