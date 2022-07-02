@@ -3,6 +3,7 @@ from collections import defaultdict
 
 from gensim.models.doc2vec import TaggedDocument
 
+from oireachtas_nlp.models.text import TextBody
 from oireachtas_nlp.utils import flatten
 
 
@@ -16,14 +17,12 @@ class BaseTaggedDocs(object):
         """
         self.items = []
         self.docs = []
-        self.num_items = 0
         self.counter = defaultdict(int)
         self.min_per_group = min_per_group
 
     def load(self, speaker, content):
         if self.should_include(speaker):
             self.items.append((speaker, content))
-            self.num_items += 1
 
     def should_include(self, item):
         raise NotImplementedError()
@@ -32,13 +31,15 @@ class BaseTaggedDocs(object):
         raise NotImplementedError()
 
     def __iter__(self):
-        for item in self.items:
-            group = self.get_group_name(item)
+        for speaker, paras in self.items:
+            body = TextBody(content='\n\n'.join(
+                [p.content for p in paras]
+            ))
             yield TaggedDocument(
-                self.content_cleaner(item).split(),
-                [str(group + '_%s') % (self.counter[group])]
+                self.content_cleaner(body).split(),
+                [str(speaker + '_%s') % (self.counter[speaker])]
             )
-            self.counter[group] += 1
+            self.counter[speaker] += 1
 
     def to_array(self):
         self.docs = [i for i in self]
