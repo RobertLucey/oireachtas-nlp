@@ -6,108 +6,24 @@ from gensim.models import Doc2Vec
 
 from oireachtas_data.utils import iter_debates
 
-from oireachtas_nlp.learn.tags import MemberTaggedDocs
+from oireachtas_nlp.learn.tags import MemberTaggedDocs, PartyTaggedDocs
 from oireachtas_nlp.learn.classifier import ClassifierCreator
-
-
-class AltClassifierCreator(ClassifierCreator):
-
-    def load_tagged_docs(self) -> None:
-        processed = 0
-        for debate in iter_debates():
-            for speaker, paras in debate.content_by_speaker.items():
-
-                if len(self.tagged_docs.items) >= self.num_items:
-                    break
-
-                # TODO:
-                # The below should probably be in the tagged doc
-                # map speakers to the pid "Bruce Wayne" -> "#BruceWayne"
-
-                if speaker == '#':
-                    continue
-                if 'Comhairle' in speaker:
-                    continue
-                if 'Cathaoirleach' in speaker:
-                    continue
-                if 'Taoiseach' in speaker:
-                    continue
-
-                content_str = '\n\n'.join(
-                    [
-                        p.content for p in paras
-                    ]
-                )
-
-                if len(content_str) < 2000:
-                    continue
-
-                self.tagged_docs.load(speaker, paras)
-                processed += 1
 
 
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--epochs',
-        dest='epochs',
-        default=15,
-        type=int
-    )
-    parser.add_argument(
-        '--num-items',
-        dest='num_items',
-        default=2**100,
-        type=int
-    )
+    parser.add_argument('--compare-file', dest='compare_file', type=str, required=True)
+    parser.add_argument('--group-by', dest='group_by', type=str, required=True, choices=['member', 'party'])
+    parser.add_argument('--epochs', dest='epochs', type=int, default=15)
+    parser.add_argument('--min-per-group', dest='min_per_group', type=int, default=10)
+    parser.add_argument('--doc2vec-minword', dest='doc2vec_minword', type=int, default=5)
+    parser.add_argument('--window', dest='window', type=int, default=10)
+    parser.add_argument('--vector-size', dest='vector_size', type=int, default=250)
+    parser.add_argument('--negative', dest='negative', type=int, default=10)
+    parser.add_argument('--workers', dest='workers', type=int, default=multiprocessing.cpu_count() - 1)
+    parser.add_argument('--train-ratio', dest='train_ratio', type=int, default=0.8)
 
-    parser.add_argument(
-        '--min-per-group',
-        dest='min_per_group',
-        default=250,
-        type=int
-    )
-
-    parser.add_argument(
-        '--doc2vec-minword',
-        dest='doc2vec_minword',
-        default=5,
-        type=int
-    )
-    parser.add_argument(
-        '--window',
-        dest='window',
-        default=10,
-        type=int
-    )
-    parser.add_argument(
-        '--vector-size',
-        dest='vector_size',
-        default=250,
-        type=int
-    )
-    parser.add_argument(
-        '--negative',
-        dest='negative',
-        default=10,
-        type=int
-    )
-    parser.add_argument(
-        '--workers',
-        dest='workers',
-        default=multiprocessing.cpu_count() - 1,
-        type=int
-    )
-
-    parser.add_argument(
-        '--compare-file',
-        dest='compare_file',
-        type=str,
-        required=True
-    )
-
-    # TODO: specify a member and see who why most sound like (other member / party)
     # TODO: specify a file of text content and see who why most sound like (other member / party)
 
     args = parser.parse_args()
@@ -119,21 +35,29 @@ def main():
     with open(args.compare_file, 'r') as fh:
         file_content = fh.read()
 
-    classifier_creator = AltClassifierCreator(
-        Doc2Vec(
-            min_count=args.doc2vec_minword,
-            window=args.window,
-            vector_size=args.vector_size,
-            sample=1e-4,
-            negative=args.negative,
-            workers=args.workers,
-        ),
-        MemberTaggedDocs(
+    if args.group_by == 'member':
+        tagged_docs = MemberTaggedDocs(
             min_per_group=args.min_per_group
-        ),
-        num_items=args.num_items,
+        )
+    elif args.group_by == 'party':
+        tagged_docs = PartyTaggedDocs(
+            min_per_group=args.min_per_group
+        )
+
+    model = Doc2Vec(
+        min_count=args.doc2vec_minword,
+        window=args.window,
+        vector_size=args.vector_size,
+        sample=1e-4,
+        negative=args.negative,
+        workers=args.workers,
+    )
+
+    classifier_creator = ClassifierCreator(
+        model,
+        tagged_docs,
         equalize_group_contents=True,
-        train_ratio=0.8,
+        train_ratio=args.train_ratio,
         epochs=args.epochs
     )
 

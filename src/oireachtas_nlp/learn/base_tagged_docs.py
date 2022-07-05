@@ -3,6 +3,8 @@ from collections import defaultdict
 
 from gensim.models.doc2vec import TaggedDocument
 
+from oireachtas_data.utils import iter_debates
+
 from oireachtas_nlp.models.text import TextBody
 from oireachtas_nlp.utils import flatten
 
@@ -24,6 +26,38 @@ class BaseTaggedDocs(object):
         if self.should_include(speaker):
             self.items.append((speaker, content))
 
+    def load_tagged_docs(self) -> None:
+        processed = 0
+
+        for debate in iter_debates():
+
+            for speaker, paras in debate.content_by_speaker.items():
+
+                # TODO:
+                # The below should probably be in the tagged doc
+                # map speakers to the pid "Bruce Wayne" -> "#BruceWayne"
+
+                if speaker == '#':
+                    continue
+                if 'Comhairle' in speaker:
+                    continue
+                if 'Cathaoirleach' in speaker:
+                    continue
+                if 'Taoiseach' in speaker:
+                    continue
+
+                content_str = '\n\n'.join(
+                    [
+                        p.content for p in paras
+                    ]
+                )
+
+                if len(content_str) < 4000:
+                    continue
+
+                self.load(speaker, paras)
+                processed += 1
+
     def should_include(self, item):
         raise NotImplementedError()
 
@@ -32,6 +66,7 @@ class BaseTaggedDocs(object):
 
     def __iter__(self):
         for speaker, paras in self.items:
+
             body = TextBody(content='\n\n'.join(
                 [p.content for p in paras]
             ))
@@ -56,6 +91,7 @@ class BaseTaggedDocs(object):
 
         def cull() -> None:
             groups_count = defaultdict(int)
+
             for item in self.items:
                 if self.get_group_name(item) is not None:
                     groups_count[self.get_group_name(item)] += 1

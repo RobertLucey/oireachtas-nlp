@@ -22,7 +22,6 @@ class ClassifierCreator():
         self,
         model,
         tagged_docs,
-        num_items=0,
         equalize_group_contents=False,
         train_ratio=0.8,
         epochs=10
@@ -34,8 +33,6 @@ class ClassifierCreator():
             Books given to this will be split by some tag.
             Example: NationalityTaggedDocs will split books into the
                      nationality of the author
-        :kwarg num_items: The number of books to have processed in order to
-            move onto training
         :kwarg equalize_group_contents: Ensure that the number of items in each
             tag are proportional. Will chop the excess from groups with more
             items than the minimum
@@ -44,7 +41,6 @@ class ClassifierCreator():
         """
         self.model = model
         self.tagged_docs = tagged_docs
-        self.num_items = num_items
         self.equalize_group_contents = equalize_group_contents
         self.train_ratio = train_ratio
         self.epochs = epochs
@@ -52,16 +48,15 @@ class ClassifierCreator():
         self.classifiers = {}
         self.class_group_map = {}
 
-    def load_tagged_docs(self):
-        raise NotImplementedError()
-
     def generate_classifier(self):
 
         print('Start loading content')
-
-        self.load_tagged_docs()
+        self.tagged_docs.load_tagged_docs()
         print('Using %s things' % (len(self.tagged_docs.items)))
+
+        print('Cleaning tagged docs')
         self.tagged_docs.clean_data()
+        print('Finished cleaning tagged docs')
 
         print('Using %s things' % (len(self.tagged_docs.items)))
 
