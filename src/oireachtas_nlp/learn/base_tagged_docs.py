@@ -11,7 +11,7 @@ from oireachtas_nlp.utils import flatten
 
 class BaseTaggedDocs(object):
 
-    def __init__(self, min_per_group=10):
+    def __init__(self, min_per_group=10, max_per_group=100):
         """
 
         :kwarg min_per_group: The minimum required items for the
@@ -21,6 +21,7 @@ class BaseTaggedDocs(object):
         self.docs = []
         self.counter = defaultdict(int)
         self.min_per_group = min_per_group
+        self.max_per_group = max_per_group
 
     def load(self, speaker, content):
         if self.should_include(speaker):
@@ -89,50 +90,21 @@ class BaseTaggedDocs(object):
 
     def clean_data(self) -> None:
 
-        def cull() -> None:
-            groups_count = defaultdict(int)
-
-            for item in self.items:
-                if self.get_group_name(item) is not None:
-                    groups_count[self.get_group_name(item)] += 1
-
-            self.items = [
-                item for item in self.items if groups_count[self.get_group_name(item)] >= self.min_per_group
-            ]
-
-            groups_count = defaultdict(int)
-            for item in self.items:
-                if self.get_group_name(item) is not None:
-                    groups_count[self.get_group_name(item)] += 1
-
-            group_items_map = defaultdict(list)
-            for item in self.items:
-                group_items_map[self.get_group_name(item)].append(item)
-            self.items = flatten([v[0:self.min_per_group] for k, v in group_items_map.items()])
-
         print('Cleaning data')
 
-        cull()
+        groups_count = defaultdict(int)
 
-        group_counts = defaultdict(int)
         for item in self.items:
             if self.get_group_name(item) is not None:
-                group_counts[self.get_group_name(item)] += 1
+                groups_count[self.get_group_name(item)] += 1
 
-        cleaned_items = []
-        for name, count in group_counts.items():
-            group_count = 0
-            for item in self.items:
-                if self.get_group_name(item) == name:
-                    if group_count < self.min_per_group:
-                        cleaned_items.append(item)
-                        group_count += 1
+        self.items = [
+            item for item in self.items if groups_count[self.get_group_name(item)] >= self.min_per_group
+        ]
 
-        self.items = cleaned_items
-
-        group_counts = defaultdict(int)
+        group_items_map = defaultdict(list)
         for item in self.items:
-            if self.get_group_name(item) is not None:
-                group_counts[self.get_group_name(item)] += 1
+            group_items_map[self.get_group_name(item)].append(item)
+        self.items = flatten([v[0:self.max_per_group] for k, v in group_items_map.items()])
 
         print('Finished cleaning data')

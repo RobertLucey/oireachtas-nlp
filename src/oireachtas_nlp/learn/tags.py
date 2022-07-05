@@ -82,50 +82,24 @@ class PartyTaggedDocs(BaseTaggedDocs):
 
     def clean_data(self) -> None:
 
-        def cull() -> None:
-            groups_count = defaultdict(int)
-
-            for item in self.items:
-                if item is not None:
-                    groups_count[item[0]] += 1
-
-            self.items = [
-                item for item in self.items if groups_count[item[0]] >= self.min_per_group
-            ]
-
-            groups_count = defaultdict(int)
-            for item in self.items:
-                if item[0] is not None:
-                    groups_count[item[0]] += 1
-
-            group_items_map = defaultdict(list)
-            for item in self.items:
-                group_items_map[item[0]].append(item)
-            self.items = flatten([v[0:self.min_per_group] for k, v in group_items_map.items()])
+        # first remove data from groups with less than x items
+        # second remove extra data over the max allowed items from groups with too many
 
         print('Cleaning data')
 
-        cull()
+        groups_count = defaultdict(int)
 
-        group_counts = defaultdict(int)
         for item in self.items:
-            if item[0] is not None:
-                group_counts[item[0]] += 1
+            if item is not None:
+                groups_count[item[0]] += 1
 
-        cleaned_items = []
-        for name, count in group_counts.items():
-            group_count = 0
-            for item in self.items:
-                if item[0] == name:
-                    if group_count < self.min_per_group:
-                        cleaned_items.append(item)
-                        group_count += 1
+        self.items = [
+            item for item in self.items if groups_count[item[0]] >= self.min_per_group
+        ]
 
-        self.items = cleaned_items
-
-        group_counts = defaultdict(int)
+        group_items_map = defaultdict(list)
         for item in self.items:
-            if item[0] is not None:
-                group_counts[item[0]] += 1
+            group_items_map[item[0]].append(item)
+        self.items = flatten([v[0:self.max_per_group] for k, v in group_items_map.items()])
 
         print('Finished cleaning data')

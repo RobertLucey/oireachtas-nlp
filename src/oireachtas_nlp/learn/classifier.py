@@ -2,17 +2,13 @@ from collections import defaultdict
 
 import numpy as np
 from sklearn.neural_network import MLPClassifier
-from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
 
 from oireachtas_nlp.learn.utils import get_train_test
 
 
 def get_classifiers():
     return {
-        'linear_svm': SVC(kernel='linear', C=0.025),
-        'neural_net': MLPClassifier(alpha=1, max_iter=100000),
-        'logistic_regression': LogisticRegression(max_iter=10000)
+        'nnclassifier': MLPClassifier(alpha=0.0001, max_iter=100000)
     }
 
 
@@ -117,7 +113,7 @@ class ClassifierCreator():
         self.class_group_map = class_group_map
 
         # TODO: get the best classifier and use that in future
-        self.preferred_classifier = self.classifiers['linear_svm']
+        self.preferred_classifier = self.classifiers['nnclassifier']
 
     def predict(self, content: str):
         return self.class_group_map[

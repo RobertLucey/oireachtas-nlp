@@ -16,7 +16,8 @@ def main():
     parser.add_argument('--compare-file', dest='compare_file', type=str, required=True)
     parser.add_argument('--group-by', dest='group_by', type=str, required=True, choices=['member', 'party'])
     parser.add_argument('--epochs', dest='epochs', type=int, default=15)
-    parser.add_argument('--min-per-group', dest='min_per_group', type=int, default=10)
+    parser.add_argument('--min-per-group', dest='min_per_group', type=int, default=5000)
+    parser.add_argument('--max-per-group', dest='max_per_group', type=int, default=10000)
     parser.add_argument('--doc2vec-minword', dest='doc2vec_minword', type=int, default=5)
     parser.add_argument('--window', dest='window', type=int, default=10)
     parser.add_argument('--vector-size', dest='vector_size', type=int, default=250)
@@ -37,11 +38,13 @@ def main():
 
     if args.group_by == 'member':
         tagged_docs = MemberTaggedDocs(
-            min_per_group=args.min_per_group
+            min_per_group=args.min_per_group,
+            max_per_group=args.max_per_group
         )
     elif args.group_by == 'party':
         tagged_docs = PartyTaggedDocs(
-            min_per_group=args.min_per_group
+            min_per_group=args.min_per_group,
+            max_per_group=args.max_per_group
         )
 
     model = Doc2Vec(
