@@ -8,7 +8,7 @@ from oireachtas_nlp.learn.utils import get_train_test
 
 def get_classifiers():
     return {
-        'nnclassifier': MLPClassifier(alpha=0.0001, max_iter=100000)
+        'nnclassifier': MLPClassifier(alpha=1, max_iter=100000)
     }
 
 
