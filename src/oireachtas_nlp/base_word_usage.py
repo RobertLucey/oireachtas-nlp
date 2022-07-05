@@ -1,8 +1,7 @@
 from collections import defaultdict
 
-from oireachtas_data.utils import (
-    iter_debates
-)
+from oireachtas_data import members
+from oireachtas_data.utils import iter_debates
 
 from oireachtas_nlp.models.para import ExtendedParas
 
@@ -28,6 +27,7 @@ class BaseWordUsage:
         self.head_tail_len = head_tail_len
         self.log_rate = log_rate
         self.groups = defaultdict(lambda: defaultdict(int))
+        self.global_words = set()
 
     def grouper(self, debate):
         raise NotImplementedError()
@@ -49,16 +49,13 @@ class BaseWordUsage:
         if group_names == set():
             return
 
-        global_words = []
-        for group_name in self.groups.keys():
-            global_words.extend(list(self.groups[group_name].keys()))
-        global_words = list(set(global_words))
-
         counts = paras.text_obj.get_word_counts()
         local_words = counts.keys()
 
-        for missing_word in set(global_words) - set(list(local_words)):
+        for missing_word in self.global_words - set(list(local_words)):
             counts[missing_word] = 0
+
+        self.global_words.union(counts.keys())
 
         for group_name in group_names:
             for word, count in counts.items():
@@ -89,7 +86,7 @@ class BaseWordUsage:
                     words_data[word] = perc_groups[base_group].get(word, 0) - perc_groups[cmp_group].get(word, 0)
 
                 data = [
-                    (i[0], i[1]) for i in sorted(
+                    (i[0], round(i[1], 2)) for i in sorted(
                         words_data.items(),
                         key=lambda item: item[1],
                         reverse=True
@@ -133,7 +130,10 @@ class MemberWordUsage(BaseWordUsage):
 class PartyWordUsage(BaseWordUsage):
 
     def grouper(self, member):
-        raise NotImplementedError()
+        parties = members.parties_of_member(member)
+        if parties is None:
+            return []
+        return parties
 
 
 class GenderWordUsage(BaseWordUsage):
