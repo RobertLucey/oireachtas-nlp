@@ -25,7 +25,7 @@ This generates a classifier with which you can see who sounds like who.
 
 By specifying `--group-by member` you can generate a classifier so you can predict who would have said the body of text you reference in `--compare-file {path_to_file}`
 
-TODO (need to clean up member -> party matching): By specifying `--group-by party` you can generate a classifier so you can predict what party would have said the body of text you reference in `--compare-file {path_to_file}`
+By specifying `--group-by party` you can generate a classifier so you can predict what party would have said the body of text you reference in `--compare-file {path_to_file}`
 
 TODO: By specifying `--belongs-to member-pid` you can generate a classifier so you can predict what party the member specified speaks like they belong to. member-pid is something like #FirstnameLastname
 
@@ -37,4 +37,4 @@ Command: `oir_word_usage_by`
 
 By specifying `--group-by member` you can see what the difference is between all or some members (see --only-groups). This will show what topics are used more by some members and by how much.
 
-TODO (need to clean up member -> party matching): By specifying `--group-by party` you can see what the difference is between all or some parties (see --only-groups). This will show what topics are used more by some parties and by how much.
+By specifying `--group-by party` you can see what the difference is between all or some parties (see --only-groups). This will show what topics are used more by some parties and by how much.
