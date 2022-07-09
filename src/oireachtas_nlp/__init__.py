@@ -1,5 +1,7 @@
 import nltk
 
+from oireachtas_nlp.log import logger
+
 
 try:
     nltk.data.find('taggers/averaged_perceptron_tagger')
