@@ -3,6 +3,7 @@ from collections import defaultdict
 import numpy as np
 from sklearn.neural_network import MLPClassifier
 
+from oireachtas_nlp import logger
 from oireachtas_nlp.learn.utils import get_train_test
 
 
@@ -46,21 +47,13 @@ class ClassifierCreator():
 
     def generate_classifier(self):
 
-        print('Start loading content')
-        self.tagged_docs.load_tagged_docs()
-        print('Using %s things' % (len(self.tagged_docs.items)))
+        logger.info('Using %s things' % (len(self.tagged_docs.items)))
 
-        print('Cleaning tagged docs')
-        self.tagged_docs.clean_data()
-        print('Finished cleaning tagged docs')
-
-        print('Using %s things' % (len(self.tagged_docs.items)))
-
-        print('Start loading content into model')
+        logger.info('Start loading content into model')
         self.model.build_vocab(self.tagged_docs.to_array())
-        print('Finished loading content into model')
+        logger.info('Finished loading content into model')
 
-        print('Start training model')
+        logger.info('Start training model')
 
         self.model.train(
             self.tagged_docs.perm(),

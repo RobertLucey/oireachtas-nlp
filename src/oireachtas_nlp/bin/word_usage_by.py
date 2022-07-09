@@ -2,8 +2,7 @@ import argparse
 
 from oireachtas_nlp.base_word_usage import (
     MemberWordUsage,
-    PartyWordUsage,
-    GenderWordUsage
+    PartyWordUsage
 )
 
 

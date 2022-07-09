@@ -4,8 +4,7 @@ import multiprocessing
 
 from gensim.models import Doc2Vec
 
-from oireachtas_data.utils import iter_debates
-
+from oireachtas_nlp import logger
 from oireachtas_nlp.learn.tags import MemberTaggedDocs, PartyTaggedDocs
 from oireachtas_nlp.learn.classifier import ClassifierCreator
 
@@ -41,11 +40,15 @@ def main():
             min_per_group=args.min_per_group,
             max_per_group=args.max_per_group
         )
+        tagged_docs.load_tagged_docs()
+        tagged_docs.clean_data()
     elif args.group_by == 'party':
         tagged_docs = PartyTaggedDocs(
             min_per_group=args.min_per_group,
             max_per_group=args.max_per_group
         )
+        tagged_docs.load_tagged_docs()
+        tagged_docs.clean_data()
 
     model = Doc2Vec(
         min_count=args.doc2vec_minword,
@@ -66,8 +69,8 @@ def main():
 
     classifier_creator.generate_classifier()
 
-    print('Prediction:')
-    print(classifier_creator.predict(file_content))
+    logger.info('Prediction:')
+    logger.infon(classifier_creator.predict(file_content))
 
 
 if __name__ == '__main__':

@@ -8,7 +8,8 @@ INSTALL_REQUIRES = (
     'gensim',
     'nltk',
     'cached_property',
-    'sklearn_pandas'
+    'sklearn_pandas',
+    'tqdm'
 )
 
 setup(

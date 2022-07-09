@@ -4,6 +4,7 @@ from gensim.models.doc2vec import TaggedDocument
 
 from oireachtas_data import members
 
+from oireachtas_nlp import logger
 from oireachtas_nlp.utils import flatten
 from oireachtas_nlp.models.text import TextBody
 from oireachtas_nlp.learn.base_tagged_docs import BaseTaggedDocs
@@ -24,7 +25,7 @@ class MemberTaggedDocs(BaseTaggedDocs):
                 [p.content for p in paras]
             ))
             yield TaggedDocument(
-                self.content_cleaner(body).split(),
+                body.content.split(),
                 [str(speaker + '_%s') % (self.counter[speaker])]
             )
             self.counter[speaker] += 1
@@ -43,8 +44,7 @@ class MemberTaggedDocs(BaseTaggedDocs):
 class PartyTaggedDocs(BaseTaggedDocs):
 
     def __iter__(self):
-        for speaker, paras in self.items:
-            party = speaker
+        for party, paras in self.items:
 
             if party is None:
                 continue
@@ -53,7 +53,7 @@ class PartyTaggedDocs(BaseTaggedDocs):
                 [p.content for p in paras]
             ))
             yield TaggedDocument(
-                self.content_cleaner(body).split(),
+                body.content.split(),
                 [str(party + '_%s') % (self.counter[party])]
             )
             self.counter[party] += 1
@@ -82,24 +82,24 @@ class PartyTaggedDocs(BaseTaggedDocs):
 
     def clean_data(self) -> None:
 
-        # first remove data from groups with less than x items
-        # second remove extra data over the max allowed items from groups with too many
+        logger.info('Cleaning data')
 
-        print('Cleaning data')
-
+        logger.info('Start removing groups with too little content')
         groups_count = defaultdict(int)
-
         for item in self.items:
             if item is not None:
                 groups_count[item[0]] += 1
-
         self.items = [
             item for item in self.items if groups_count[item[0]] >= self.min_per_group
         ]
+        logger.info('Finished removing groups with too little content')
 
+        logger.info('Start limiting the number of items per group')
         group_items_map = defaultdict(list)
         for item in self.items:
             group_items_map[item[0]].append(item)
         self.items = flatten([v[0:self.max_per_group] for k, v in group_items_map.items()])
+        logger.info('Finished limiting the number of items per group')
 
-        print('Finished cleaning data')
+        logger.info('Finished cleaning data')
+

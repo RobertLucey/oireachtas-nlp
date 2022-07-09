@@ -3,3 +3,4 @@ gensim
 nltk
 cached_property
 sklearn_pandas
+tqdm

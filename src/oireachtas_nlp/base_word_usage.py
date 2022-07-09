@@ -3,6 +3,7 @@ from collections import defaultdict
 from oireachtas_data import members
 from oireachtas_data.utils import iter_debates
 
+from oireachtas_nlp import logger
 from oireachtas_nlp.models.para import ExtendedParas
 
 
@@ -102,7 +103,7 @@ class BaseWordUsage:
                 )
 
         for cmp_group, base_group, data in results:
-            print(
+            logger.info(
                 '%s > %s: %s' % (
                     base_group,
                     cmp_group,
