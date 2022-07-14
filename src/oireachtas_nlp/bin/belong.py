@@ -45,20 +45,16 @@ def main():
         min_per_group=args.min_per_member_group,
         max_per_group=args.max_per_member_group
     )
-    logger.info('Loading member tagged docs')
     member_tagged_docs.load_tagged_docs()
     member_tagged_docs.clean_data()
-    logger.info('Finished loading member tagged docs')
 
     party_tagged_docs = PartyTaggedDocs(
         min_per_group=args.min_per_party_group,
         max_per_group=args.max_per_party_group,
         exclude_para_hashes=member_tagged_docs.get_para_hashes()  # Don't allow paras we will be predicting to be in training
     )
-    logger.info('Loading party tagged docs')
     party_tagged_docs.load_tagged_docs()
     party_tagged_docs.clean_data()
-    logger.info('Finished loading party tagged docs')
 
     # FIXME: Seems to do bad for when lots of people
 
@@ -81,6 +77,7 @@ def main():
     party_classifier_creator.generate_classifier()
     logger.info('Finished generating party classifier')
 
+    # TODO: iter for each person and give results as we get them rather than processing them all
     logger.info('Generating individual member results')
     member_results = defaultdict(lambda: defaultdict(int))
     for member_para_tuple in tqdm.tqdm(member_tagged_docs.items):
