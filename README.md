@@ -13,28 +13,21 @@ PDFToHTML - `sudo apt install pdftohtml`
 Usage
 =====
 
-After installation run `pull_debates` for a while to get some data. Do thiis for as long as you want. The longer the better
+After installation run `pull_debates` for a while to get some data. Do this for as long as you want. The longer the better
+
+Also run `pull_members` to get member data.
 
 
-Feature: Sounds Like
-====================
+Features
+========
 
-Command: `oir_sounds_like`
+Look at the help of any of the below for a better description of how to use it.
 
-This generates a classifier with which you can see who sounds like who.
+`oir_sounds_like`
+This generates a classifier with which you can see what a pice of text beongs to (a member or a party)
 
-By specifying `--group-by member` you can generate a classifier so you can predict who would have said the body of text you reference in `--compare-file {path_to_file}`
+`oir_belong`
+This will go through members and determinne if they speak like the party they belong to (or not and which one they do sound like they belong to)
 
-By specifying `--group-by party` you can generate a classifier so you can predict what party would have said the body of text you reference in `--compare-file {path_to_file}`
-
-TODO: By specifying `--belongs-to member-pid` you can generate a classifier so you can predict what party the member specified speaks like they belong to. member-pid is something like #FirstnameLastname
-
-
-Feature: Word Usage By
-======================
-
-Command: `oir_word_usage_by`
-
-By specifying `--group-by member` you can see what the difference is between all or some members (see --only-groups). This will show what topics are used more by some members and by how much.
-
-By specifying `--group-by party` you can see what the difference is between all or some parties (see --only-groups). This will show what topics are used more by some parties and by how much.
+`oir_word_usage_by`
+This will show the difference in words used between members or parties.
