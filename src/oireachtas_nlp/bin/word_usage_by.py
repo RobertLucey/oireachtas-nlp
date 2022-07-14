@@ -1,14 +1,19 @@
 import argparse
 
-from oireachtas_nlp.base_word_usage import (
-    MemberWordUsage,
-    PartyWordUsage
-)
+from oireachtas_nlp.word_usage.member_word_usage import MemberWordUsage
+from oireachtas_nlp.word_usage.party_word_usage import PartyWordUsage
 
 
 def main():
 
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--min-paras-per-group',
+        dest='min_paras_per_group',
+        help='how mnay paragraphs must a group have to be processed',
+        type=int,
+        default=10
+    )
     parser.add_argument(
         '--group-by',
         dest='group_by',
@@ -31,15 +36,8 @@ def main():
     parser.add_argument(
         '--top-n',
         dest='top_n',
-        help='how many results to include',
-        default=10,
-        type=int
-    )
-    parser.add_argument(
-        '--log-rate',
-        dest='log_rate',
-        help='how often to log results',
-        default=100,
+        help='how many results to include for each comparison',
+        default=5,
         type=int
     )
 
@@ -58,14 +56,14 @@ def main():
             only_words=only_words,
             only_groups=only_groups,
             head_tail_len=args.top_n,
-            log_rate=args.log_rate
+            min_paras_per_group=args.min_paras_per_group
         ).process()
     elif args.group_by == 'party':
         PartyWordUsage(
             only_words=only_words,
             only_groups=only_groups,
             head_tail_len=args.top_n,
-            log_rate=args.log_rate
+            min_paras_per_group=args.min_paras_per_group
         ).process()
     else:
         raise ValueError('group-type must be one of "member" or "party"')
