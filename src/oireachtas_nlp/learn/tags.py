@@ -12,6 +12,8 @@ from oireachtas_nlp.learn.base_tagged_docs import BaseTaggedDocs
 
 class MemberTaggedDocs(BaseTaggedDocs):
 
+    NAME = 'member'
+
     def __iter__(self):
         for speaker, paras in self.items:
 
@@ -42,6 +44,8 @@ class MemberTaggedDocs(BaseTaggedDocs):
 
 
 class PartyTaggedDocs(BaseTaggedDocs):
+
+    NAME = 'party'
 
     def __iter__(self):
         for party, paras in self.items:

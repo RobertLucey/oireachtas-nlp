@@ -1,8 +1,11 @@
 from random import shuffle
 from collections import defaultdict
 
+import tqdm
+
 from gensim.models.doc2vec import TaggedDocument
 
+from oireachtas_data import members
 from oireachtas_data.utils import iter_debates
 
 from oireachtas_nlp import logger
@@ -41,13 +44,17 @@ class BaseTaggedDocs(object):
         if self.loaded_tagged_docs:
             return
 
-        for debate in iter_debates():  # TODO: tqdm
+        logger.info(f'Loading "{self.NAME}" tagged docs')
+        for debate in tqdm.tqdm(iter_debates()):
 
             for speaker, paras in debate.content_by_speaker.items():
 
-                # TODO:
-                # The below should probably be in the tagged doc
-                # map speakers to the pid "Bruce Wayne" -> "#BruceWayne"
+                # TODO: map speakers to the pid "Bruce Wayne" -> "#BruceWayne"
+
+                # If we don't recognise the speaker then ignore
+                member = members.get_member_from_name(speaker)
+                if member is None:
+                    continue
 
                 if speaker == '#':
                     continue
@@ -70,6 +77,8 @@ class BaseTaggedDocs(object):
                 self.load(speaker, paras)
 
         self.loaded_tagged_docs = True
+
+        logger.info(f'Finished loading "{self.NAME}" tagged docs')
 
     def should_include(self, item):
         raise NotImplementedError()
@@ -98,8 +107,7 @@ class BaseTaggedDocs(object):
         return self.docs
 
     def clean_data(self) -> None:
-
-        logger.info('Cleaning data')
+        logger.info(f'Cleaning "{self.NAME}" data')
 
         logger.info('Start removing groups with too little content')
         groups_count = defaultdict(int)
@@ -118,4 +126,4 @@ class BaseTaggedDocs(object):
         self.items = flatten([v[0:self.max_per_group] for k, v in group_items_map.items()])
         logger.info('Finished limiting the number of items per group')
 
-        logger.info('Finished cleaning data')
+        logger.info(f'Finished cleaning "{self.NAME}" data')
