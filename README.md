@@ -31,3 +31,6 @@ This will go through members and determinne if they speak like the party they be
 
 `oir_word_usage_by`
 This will show the difference in words used between members or parties.
+
+`oir_sentiment`
+This will show how positive / negative members / parties are
