@@ -40,21 +40,21 @@ class UtilsTest(TestCase):
         self.assertEqual(
             TextBody(
                 content='yes no maybe'
-            ).get_lexical_diversity(),
+            ).get_lexical_diversity(num_sample_words=3),
             1
         )
 
         self.assertEqual(
             TextBody(
                 content='no no no'
-            ).get_lexical_diversity(),
+            ).get_lexical_diversity(num_sample_words=3),
             1/3.
         )
 
         self.assertEqual(
             TextBody(
                 content='yes yes no no'
-            ).get_lexical_diversity(),
+            ).get_lexical_diversity(num_sample_words=4),
             1/2.
         )
 
