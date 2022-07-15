@@ -30,10 +30,8 @@ def main():
 
         for debate in tqdm.tqdm(iter_debates()):
             for speaker, paras in debate.content_by_speaker.items():
-
                 if members.get_member_from_name(speaker) is None:
                     continue
-
                 speaker_map[speaker].extend(paras)
 
         sia = SentimentIntensityAnalyzer()
@@ -55,18 +53,11 @@ def main():
         party_map = defaultdict(list)
         results = {}
 
-        i = 0
         for debate in tqdm.tqdm(iter_debates()):
-            i+=1
-            if i >10:
-                break
             for speaker, paras in debate.content_by_speaker.items():
-
                 parties = members.parties_of_member(speaker)
-
                 if parties is None or parties == []:
                     continue
-
                 for party in parties:
                     party_map[party].extend(paras)
 
