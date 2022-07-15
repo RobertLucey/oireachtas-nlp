@@ -28,6 +28,8 @@ setup(
             'oir_sounds_like = oireachtas_nlp.bin.word_usage_by:main',
             'oir_belong = oireachtas_nlp.bin.belong:main',
             'oir_sentiment = oireachtas_nlp.bin.sentiment:main',
+            'oir_lexical_diversity = oireachtas_nlp.bin.lexical_diversity:main',
+            # TODO: reading level
         ]
     }
 )

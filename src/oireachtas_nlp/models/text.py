@@ -1,3 +1,4 @@
+import random
 from collections import Counter
 
 from cached_property import cached_property
@@ -22,10 +23,17 @@ class TextBody():
         self.content = kwargs.get('content', None)
         self.content_path = kwargs.get('content_path', None)
 
-    def get_lexical_diversity(self, only_dictionary_words=False):
-        if only_dictionary_words:
-            return float(len(set(self.dictionary_words))) / len(self.dictionary_words)
-        return float(len(set(self.words))) / self.word_count
+    def get_lexical_diversity(self, num_sample_words=50000):
+        dict_words = [
+            word.lower() for word in self.words if word.lower() in ENG_WORDS and word.isalpha()
+        ]
+
+        if len(dict_words) < num_sample_words:
+            return None
+
+        sample_dict_words = random.sample(dict_words, num_sample_words)
+
+        return float(len(set(sample_dict_words))) / len(sample_dict_words)
 
     @property
     def basic_words(self):
