@@ -5,6 +5,7 @@ from setuptools import (
 
 INSTALL_REQUIRES = (
     'oireachtas_data',
+    'textstat',
     'gensim',
     'nltk',
     'cached_property',
@@ -29,7 +30,7 @@ setup(
             'oir_belong = oireachtas_nlp.bin.belong:main',
             'oir_sentiment = oireachtas_nlp.bin.sentiment:main',
             'oir_lexical_diversity = oireachtas_nlp.bin.lexical_diversity:main',
-            # TODO: reading level
+            'oir_lexical_difficulty = oireachtas_nlp.bin.lexical_difficulty:main',
         ]
     }
 )

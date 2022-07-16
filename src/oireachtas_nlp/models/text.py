@@ -1,8 +1,10 @@
 import random
+import re
 from collections import Counter
 
 from cached_property import cached_property
 
+import textstat
 import nltk
 
 from oireachtas_nlp.constants import (
@@ -22,6 +24,13 @@ class TextBody():
         """
         self.content = kwargs.get('content', None)
         self.content_path = kwargs.get('content_path', None)
+
+    @property
+    def quick_sentences(self):
+        return re.split('; |\. |\? |\! |\*|\n', self.content)
+
+    def get_reading_difficulty(self, method):
+        return getattr(textstat, method)(self.content)
 
     def get_lexical_diversity(self, num_sample_words=50000):
         dict_words = [

@@ -1,4 +1,5 @@
 oireachtas_data
+textstat
 gensim
 nltk
 cached_property
