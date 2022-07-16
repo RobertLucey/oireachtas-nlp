@@ -15,7 +15,7 @@ INSTALL_REQUIRES = (
 
 setup(
     name='oireachtas-nlp',
-    version='0.0.1',
+    version='1.0.0',
     python_requires='>=3.6',
     description='',
     author='Robert Lucey',
