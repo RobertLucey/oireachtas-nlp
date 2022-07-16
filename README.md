@@ -10,6 +10,11 @@ Poppler - `sudo apt install libpoppler-cpp-dev`
 
 PDFToHTML - `sudo apt install pdftohtml`
 
+Installation
+============
+
+`pip install oireachtas-nlp`
+
 Usage
 =====
 
