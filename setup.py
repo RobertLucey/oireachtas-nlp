@@ -18,6 +18,7 @@ setup(
     version='1.0.0',
     python_requires='>=3.6',
     description='',
+    long_description='',
     author='Robert Lucey',
     url='https://github.com/RobertLucey/oireachtas-nlp',
     packages=find_packages('src'),
