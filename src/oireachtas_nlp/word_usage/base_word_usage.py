@@ -71,6 +71,7 @@ class BaseWordUsage:
                 perc = (count / group_count) * 100
                 perc_groups[group_name][word] = perc
 
+        base_cmp_results = defaultdict(dict)
         logger.info('Calculating differences')
         for base_group in perc_groups.keys():
             if base_group is None:
@@ -92,6 +93,7 @@ class BaseWordUsage:
                     )[:self.head_tail_len]
                 ]
 
+                base_cmp_results[base_group][cmp_group] = data
                 logger.info(
                     '%s > %s: %s' % (
                         base_group,
@@ -99,6 +101,8 @@ class BaseWordUsage:
                         data
                     )
                 )
+
+        return base_cmp_results
 
     def process(self):
         raise NotImplementedError()
