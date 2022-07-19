@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import multiprocessing
 
 from gensim.models import Doc2Vec
@@ -50,6 +51,10 @@ def main():
         tagged_docs.load_tagged_docs()
         tagged_docs.clean_data()
 
+    if len(tagged_docs.items) == 0:
+        logger.warning('Reduce min_per_group to include some groups')
+        sys.exit()
+
     model = Doc2Vec(
         min_count=args.doc2vec_minword,
         window=args.window,
@@ -70,7 +75,7 @@ def main():
     classifier_creator.generate_classifier()
 
     logger.info('Prediction:')
-    logger.infon(classifier_creator.predict(file_content))
+    logger.info(classifier_creator.predict(file_content))
 
 
 if __name__ == '__main__':
