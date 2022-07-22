@@ -50,14 +50,11 @@ class TextBody():
 
     @property
     def words(self):
-        txt = self.content.translate(
-            str.maketrans(
-                '',
-                '',
-                ''.join(['\n', '\n\n'] + EXTENDED_PUNCTUATION)
-            )
-        )
-        return [i for i in txt.split() if i]
+        content = self.content
+        for p in EXTENDED_PUNCTUATION:
+            content = content.replace(p, ' ')
+
+        return [i for i in content.split() if i]
 
     @cached_property
     def sentences(self):
