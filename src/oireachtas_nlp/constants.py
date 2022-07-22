@@ -11,6 +11,11 @@ except LookupError:  # pragma: nocover
 finally:
     ENG_WORDS = set(nltk.corpus.words.words())
 
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:  # pragma: nocover
+    nltk.download('stopwords')
+
 APOSTROPHES = {'’', '\''}
 SENTENCE_TERMINATORS = {'.', '?', '!'}
 SPEECH_QUOTES = {'`', '‘', '"', '``', '”', '“', '’'}
