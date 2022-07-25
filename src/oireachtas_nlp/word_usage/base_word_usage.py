@@ -4,30 +4,29 @@ from oireachtas_nlp import logger
 from oireachtas_nlp.models.para import ExtendedParas
 
 GOVERNMENT_WORDS = {
-    'minister',
-    'deputy',
-    'government',
-    'taoiseach',
-    'department',
-    'bill',
-    'state',
-    'amendment',
-    'senator',
-    'programme',
-    'scheme',
-    'amendment'
+    "minister",
+    "deputy",
+    "government",
+    "taoiseach",
+    "department",
+    "bill",
+    "state",
+    "amendment",
+    "senator",
+    "programme",
+    "scheme",
+    "amendment",
 }
 
 
 class BaseWordUsage:
-
     def __init__(
         self,
         only_words=None,
         only_groups=None,
         head_tail_len=5,
         min_paras_per_group=10,
-        include_government_words=False
+        include_government_words=False,
     ):
         """
 
@@ -67,10 +66,18 @@ class BaseWordUsage:
         if self.include_government_words:
             counts = paras.text_obj.get_word_counts()
         else:
-            counts = {word: count for word, count in paras.text_obj.get_word_counts().items() if word not in GOVERNMENT_WORDS}
+            counts = {
+                word: count
+                for word, count in paras.text_obj.get_word_counts().items()
+                if word not in GOVERNMENT_WORDS
+            }
 
         if self.only_words:
-            counts = {word: count for word, count in counts.items() if word not in self.only_words}
+            counts = {
+                word: count
+                for word, count in counts.items()
+                if word not in self.only_words
+            }
 
         local_words = counts.keys()
 
@@ -87,7 +94,7 @@ class BaseWordUsage:
     def log_stats(self):
         perc_groups = defaultdict(lambda: defaultdict(int))
 
-        logger.info('Setting group words stats')
+        logger.info("Setting group words stats")
         for group_name in self.groups.keys():
             group_count = sum(self.groups[group_name].values())
             for word, count in self.groups[group_name].items():
@@ -109,14 +116,16 @@ class BaseWordUsage:
 
             # TODO: don't do for all others
             for word, count in all_except.items():
-                perc_groups[f'all_except_{base_group_name}'][word] = (count / group_count) * 100
+                perc_groups[f"all_except_{base_group_name}"][word] = (
+                    count / group_count
+                ) * 100
 
         base_cmp_results = defaultdict(dict)
-        logger.info('Calculating differences')
+        logger.info("Calculating differences")
         for base_group in perc_groups.keys():
             if base_group is None:
                 continue
-            if 'all_except' in base_group:
+            if "all_except" in base_group:
                 continue
             base_keys = list(perc_groups[base_group].keys())
             for cmp_group in perc_groups.keys():
@@ -125,26 +134,24 @@ class BaseWordUsage:
 
                 words_data = {}
                 for word in set(base_keys + list(perc_groups[cmp_group].keys())):
-                    words_data[word] = perc_groups[base_group].get(word, 0) - perc_groups[cmp_group].get(word, 0)
+                    words_data[word] = perc_groups[base_group].get(
+                        word, 0
+                    ) - perc_groups[cmp_group].get(word, 0)
 
                 data = [
-                    (i[0], round(i[1], 2)) for i in sorted(
-                        words_data.items(),
-                        key=lambda item: item[1],
-                        reverse=True
-                    )[:self.head_tail_len]
+                    (i[0], round(i[1], 2))
+                    for i in sorted(
+                        words_data.items(), key=lambda item: item[1], reverse=True
+                    )[: self.head_tail_len]
                 ]
 
                 base_cmp_results[base_group][cmp_group] = data
 
-                if (cmp_group.startswith('all_except_') and cmp_group == f'all_except_{base_group}') or 'all_except_' not in cmp_group:
-                    logger.info(
-                        '%s > %s: %s' % (
-                            base_group,
-                            cmp_group,
-                            data
-                        )
-                    )
+                if (
+                    cmp_group.startswith("all_except_")
+                    and cmp_group == f"all_except_{base_group}"
+                ) or "all_except_" not in cmp_group:
+                    logger.info("%s > %s: %s" % (base_group, cmp_group, data))
 
         return base_cmp_results
 

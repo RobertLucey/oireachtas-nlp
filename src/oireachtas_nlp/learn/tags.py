@@ -12,23 +12,20 @@ from oireachtas_nlp.learn.base_tagged_docs import BaseTaggedDocs
 
 class MemberTaggedDocs(BaseTaggedDocs):
 
-    NAME = 'member'
+    NAME = "member"
 
     def __iter__(self):
         for speaker, paras in self.items:
 
-            if '%' in speaker:
+            if "%" in speaker:
                 continue
 
-            if speaker.strip() == '#':
+            if speaker.strip() == "#":
                 continue
 
-            body = TextBody(content='\n\n'.join(
-                [p.content for p in paras]
-            ))
+            body = TextBody(content="\n\n".join([p.content for p in paras]))
             yield TaggedDocument(
-                body.content.split(),
-                [str(speaker + '_%s') % (self.counter[speaker])]
+                body.content.split(), [str(speaker + "_%s") % (self.counter[speaker])]
             )
             self.counter[speaker] += 1
 
@@ -45,7 +42,7 @@ class MemberTaggedDocs(BaseTaggedDocs):
 
 class PartyTaggedDocs(BaseTaggedDocs):
 
-    NAME = 'party'
+    NAME = "party"
 
     def __iter__(self):
         for party, paras in self.items:
@@ -53,19 +50,16 @@ class PartyTaggedDocs(BaseTaggedDocs):
             if party is None:
                 continue
 
-            body = TextBody(content='\n\n'.join(
-                [p.content for p in paras]
-            ))
+            body = TextBody(content="\n\n".join([p.content for p in paras]))
             yield TaggedDocument(
-                body.content.split(),
-                [str(party + '_%s') % (self.counter[party])]
+                body.content.split(), [str(party + "_%s") % (self.counter[party])]
             )
             self.counter[party] += 1
 
     def get_group_name(self, item):
         parties = members.parties_of_member(item)
         if parties:
-            return parties[0].replace('_', '')
+            return parties[0].replace("_", "")
 
     def should_include(self, debate):
         return True
@@ -79,16 +73,16 @@ class PartyTaggedDocs(BaseTaggedDocs):
 
             # Independant is a bit risky to include
             # should make this an option
-            if party == 'Independent':
+            if party == "Independent":
                 return
 
             self.items.append((party, content))
 
     def clean_data(self) -> None:
 
-        logger.info('Cleaning data')
+        logger.info("Cleaning data")
 
-        logger.info('Start removing groups with too little content')
+        logger.info("Start removing groups with too little content")
         groups_count = defaultdict(int)
         for item in self.items:
             if item is not None:
@@ -96,14 +90,15 @@ class PartyTaggedDocs(BaseTaggedDocs):
         self.items = [
             item for item in self.items if groups_count[item[0]] >= self.min_per_group
         ]
-        logger.info('Finished removing groups with too little content')
+        logger.info("Finished removing groups with too little content")
 
-        logger.info('Start limiting the number of items per group')
+        logger.info("Start limiting the number of items per group")
         group_items_map = defaultdict(list)
         for item in self.items:
             group_items_map[item[0]].append(item)
-        self.items = flatten([v[0:self.max_per_group] for k, v in group_items_map.items()])
-        logger.info('Finished limiting the number of items per group')
+        self.items = flatten(
+            [v[0 : self.max_per_group] for k, v in group_items_map.items()]
+        )
+        logger.info("Finished limiting the number of items per group")
 
-        logger.info('Finished cleaning data')
-
+        logger.info("Finished cleaning data")

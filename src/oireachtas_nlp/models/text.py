@@ -7,34 +7,31 @@ from cached_property import cached_property
 import textstat
 import nltk
 
-from oireachtas_nlp.constants import (
-    BORING_WORDS,
-    ENG_WORDS,
-    EXTENDED_PUNCTUATION
-)
+from oireachtas_nlp.constants import BORING_WORDS, ENG_WORDS, EXTENDED_PUNCTUATION
 
 
-class TextBody():
-
+class TextBody:
     def __init__(self, *args, **kwargs):
         """
 
         :kwarg content: Text content as a string
         :kwarg content_path: Path to a txt file containing the content
         """
-        self.content = kwargs.get('content', None)
-        self.content_path = kwargs.get('content_path', None)
+        self.content = kwargs.get("content", None)
+        self.content_path = kwargs.get("content_path", None)
 
     @property
     def quick_sentences(self):
-        return re.split('; |\. |\? |\! |\*|\n', self.content)
+        return re.split("; |\. |\? |\! |\*|\n", self.content)
 
     def get_reading_difficulty(self, method):
         return getattr(textstat, method)(self.content)
 
     def get_lexical_diversity(self, num_sample_words=50000):
         dict_words = [
-            word.lower() for word in self.words if word.lower() in ENG_WORDS and word.isalpha()
+            word.lower()
+            for word in self.words
+            if word.lower() in ENG_WORDS and word.isalpha()
         ]
 
         if len(dict_words) < num_sample_words:
@@ -52,7 +49,7 @@ class TextBody():
     def words(self):
         content = self.content
         for p in EXTENDED_PUNCTUATION:
-            content = content.replace(p, ' ')
+            content = content.replace(p, " ")
 
         return [i for i in content.split() if i]
 
@@ -90,7 +87,9 @@ class TextBody():
             return dict(
                 Counter(
                     [
-                        w.lower() for w in self.dictionary_words if w.lower() in only_include_words
+                        w.lower()
+                        for w in self.dictionary_words
+                        if w.lower() in only_include_words
                     ]
                 )
             )
@@ -98,10 +97,9 @@ class TextBody():
         return dict(
             Counter(
                 [
-                    w.lower() for w in self.words if all([
-                        w.lower() not in BORING_WORDS,
-                        w.isalpha()
-                    ])
+                    w.lower()
+                    for w in self.words
+                    if all([w.lower() not in BORING_WORDS, w.isalpha()])
                 ]
             )
         )

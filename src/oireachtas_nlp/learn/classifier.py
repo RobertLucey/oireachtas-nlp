@@ -8,20 +8,17 @@ from oireachtas_nlp.learn.utils import get_train_test
 
 
 def get_classifiers():
-    return {
-        'nnclassifier': MLPClassifier(alpha=1, max_iter=100000)
-    }
+    return {"nnclassifier": MLPClassifier(alpha=1, max_iter=100000)}
 
 
-class ClassifierCreator():
-
+class ClassifierCreator:
     def __init__(
         self,
         model,
         tagged_docs,
         equalize_group_contents=False,
         train_ratio=0.8,
-        epochs=10
+        epochs=10,
     ):
         """
 
@@ -47,44 +44,50 @@ class ClassifierCreator():
 
     def generate_classifier(self):
 
-        logger.info('Using %s tagged docs' % (len(self.tagged_docs.items)))
+        logger.info("Using %s tagged docs" % (len(self.tagged_docs.items)))
 
-        logger.info('Start loading content into model')
+        logger.info("Start loading content into model")
         self.model.build_vocab(self.tagged_docs.to_array())
-        logger.info('Finished loading content into model')
+        logger.info("Finished loading content into model")
 
-        logger.info('Start training model')
+        logger.info("Start training model")
 
         self.model.train(
             self.tagged_docs.perm(),
             total_examples=self.model.corpus_count,
-            epochs=self.epochs
+            epochs=self.epochs,
         )
-        print('Finished training model')
+        print("Finished training model")
 
         grouped_vecs = defaultdict(list)
         for tag in self.model.docvecs.key_to_index.keys():
-            if len(tag.split('_')) > 2:
+            if len(tag.split("_")) > 2:
                 continue
-            grouped_vecs[tag.split('_')[0]].append(int(tag.split('_')[1]))
+            grouped_vecs[tag.split("_")[0]].append(int(tag.split("_")[1]))
 
-        print('Creating train/test set')
-        train_arrays, train_labels, test_arrays, test_labels, class_group_map = get_train_test(
+        print("Creating train/test set")
+        (
+            train_arrays,
+            train_labels,
+            test_arrays,
+            test_labels,
+            class_group_map,
+        ) = get_train_test(
             self.model,
             grouped_vecs,
             equalize_group_contents=self.equalize_group_contents,
-            train_ratio=self.train_ratio
+            train_ratio=self.train_ratio,
         )
-        print('Created train/test set')
+        print("Created train/test set")
 
         classifiers = get_classifiers()
 
         for name, clf in classifiers.items():
             try:
-                print('----------')
+                print("----------")
                 clf.fit(train_arrays, train_labels)
                 score = clf.score(test_arrays, test_labels)
-                print('%s %s' % (name, score))
+                print("%s %s" % (name, score))
 
                 joined = [i for i in zip(test_labels, test_arrays)]
                 class_arrays_map = defaultdict(list)
@@ -93,9 +96,9 @@ class ClassifierCreator():
 
                 for label, array in class_arrays_map.items():
                     score = clf.score(np.array(array), len(array) * [label])
-                    print('%s %s' % (class_group_map[label], score))
+                    print("%s %s" % (class_group_map[label], score))
 
-                print('----------')
+                print("----------")
 
                 classifiers[name] = clf
             except ValueError as ex:
@@ -106,13 +109,11 @@ class ClassifierCreator():
         self.class_group_map = class_group_map
 
         # TODO: get the best classifier and use that in future
-        self.preferred_classifier = self.classifiers['nnclassifier']
+        self.preferred_classifier = self.classifiers["nnclassifier"]
 
     def predict(self, content: str):
         return self.class_group_map[
             self.preferred_classifier.predict(
-                [
-                    self.model.infer_vector(content.split())
-                ]
+                [self.model.infer_vector(content.split())]
             )[0]
         ]

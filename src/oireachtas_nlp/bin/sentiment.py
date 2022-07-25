@@ -14,16 +14,28 @@ from oireachtas_nlp import logger
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--group-by', dest='group_by', type=str, required=True, choices=['member', 'party'])
-    parser.add_argument('--sort-by', dest='sort_by', type=str, required=True, choices=['neg', 'pos', 'neu'])
+    parser.add_argument(
+        "--group-by",
+        dest="group_by",
+        type=str,
+        required=True,
+        choices=["member", "party"],
+    )
+    parser.add_argument(
+        "--sort-by",
+        dest="sort_by",
+        type=str,
+        required=True,
+        choices=["neg", "pos", "neu"],
+    )
     args = parser.parse_args()
 
     try:
-        nltk.data.find('sentiment')
+        nltk.data.find("sentiment")
     except LookupError:  # pragma: nocover
-        nltk.download('vader_lexicon')
+        nltk.download("vader_lexicon")
 
-    if args.group_by == 'member':
+    if args.group_by == "member":
 
         speaker_map = defaultdict(list)
         results = {}
@@ -40,16 +52,18 @@ def main():
             # TODO: multiprocess?
             if len(paras) < 10:
                 continue
-            results[speaker] = sia.polarity_scores('\n\n'.join([p.content for p in paras]))
-
-        sorted_key_results = sorted(results, key=lambda x: results[x][args.sort_by], reverse=True)
-
-        for member in sorted_key_results:
-            logger.info(
-                f'{member.ljust(30)} {results[member]}'
+            results[speaker] = sia.polarity_scores(
+                "\n\n".join([p.content for p in paras])
             )
 
-    elif args.group_by == 'party':
+        sorted_key_results = sorted(
+            results, key=lambda x: results[x][args.sort_by], reverse=True
+        )
+
+        for member in sorted_key_results:
+            logger.info(f"{member.ljust(30)} {results[member]}")
+
+    elif args.group_by == "party":
         party_map = defaultdict(list)
         results = {}
 
@@ -68,15 +82,17 @@ def main():
             if len(paras) < 10:
                 continue
 
-            results[party] = sia.polarity_scores('\n\n'.join([p.content for p in paras]))
-
-        sorted_key_results = sorted(results, key=lambda x: results[x][args.sort_by], reverse=True)
-
-        for member in sorted_key_results:
-            logger.info(
-                f'{member.ljust(30)} {results[member]}'
+            results[party] = sia.polarity_scores(
+                "\n\n".join([p.content for p in paras])
             )
 
+        sorted_key_results = sorted(
+            results, key=lambda x: results[x][args.sort_by], reverse=True
+        )
 
-if __name__ == '__main__':
+        for member in sorted_key_results:
+            logger.info(f"{member.ljust(30)} {results[member]}")
+
+
+if __name__ == "__main__":
     main()

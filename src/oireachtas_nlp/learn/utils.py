@@ -3,12 +3,7 @@ from collections import defaultdict
 import numpy as np
 
 
-def get_train_test(
-    model,
-    grouped_vecs,
-    equalize_group_contents=False,
-    train_ratio=0.8
-):
+def get_train_test(model, grouped_vecs, equalize_group_contents=False, train_ratio=0.8):
     """
     Split into train and test data for each given group
 
@@ -24,53 +19,50 @@ def get_train_test(
     def format_arrays_labels(split_type):
         arrays = np.zeros(
             (
-                sum([len(v) for k, v in splits.items() if k.split('_')[-1] == split_type]),
-                model.vector_size
+                sum(
+                    [
+                        len(v)
+                        for k, v in splits.items()
+                        if k.split("_")[-1] == split_type
+                    ]
+                ),
+                model.vector_size,
             )
         )
         labels = np.zeros(
-            sum([len(v) for k, v in splits.items() if k.split('_')[-1] == split_type])
+            sum([len(v) for k, v in splits.items() if k.split("_")[-1] == split_type])
         )
 
         class_group_map = {}
         next_idx = 0
         for group_type, vects in splits.items():
-            if group_type.split('_')[-1] != split_type:
+            if group_type.split("_")[-1] != split_type:
                 continue
             for vect in vects:
-                arrays[next_idx] = model.docvecs['%s_%s' % (group_type.split('_')[0], vect)]
-                labels[next_idx] = list(grouped_vecs.keys()).index(group_type.split('_')[0])
-                class_group_map[list(grouped_vecs.keys()).index(group_type.split('_')[0])] = group_type.split('_')[0]
+                arrays[next_idx] = model.docvecs[
+                    "%s_%s" % (group_type.split("_")[0], vect)
+                ]
+                labels[next_idx] = list(grouped_vecs.keys()).index(
+                    group_type.split("_")[0]
+                )
+                class_group_map[
+                    list(grouped_vecs.keys()).index(group_type.split("_")[0])
+                ] = group_type.split("_")[0]
                 next_idx += 1
 
-        return (
-            arrays,
-            labels,
-            class_group_map
-        )
+        return (arrays, labels, class_group_map)
 
     if equalize_group_contents:
         min_count = min([len(v) for v in grouped_vecs.values()])
-        grouped_vecs = {
-            k: sorted(v)[0:min_count] for k, v in grouped_vecs.items()
-        }
+        grouped_vecs = {k: sorted(v)[0:min_count] for k, v in grouped_vecs.items()}
 
     splits = defaultdict(dict)
     for group_name, vects in grouped_vecs.items():
-        train, test = np.split(
-            vects,
-            [int(len(vects) * train_ratio)]
-        )
-        splits[group_name + '_train'] = sorted(train)
-        splits[group_name + '_test'] = sorted(test)
+        train, test = np.split(vects, [int(len(vects) * train_ratio)])
+        splits[group_name + "_train"] = sorted(train)
+        splits[group_name + "_test"] = sorted(test)
 
-    train_arrays, train_labels, _ = format_arrays_labels('train')
-    test_arrays, test_labels, class_group_map = format_arrays_labels('test')
+    train_arrays, train_labels, _ = format_arrays_labels("train")
+    test_arrays, test_labels, class_group_map = format_arrays_labels("test")
 
-    return (
-        train_arrays,
-        train_labels,
-        test_arrays,
-        test_labels,
-        class_group_map
-    )
+    return (train_arrays, train_labels, test_arrays, test_labels, class_group_map)
