@@ -27,7 +27,7 @@ def get_percentages(d):
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--epochs", dest="epochs", type=int, default=15)
+    parser.add_argument("--epochs", dest="epochs", type=int, default=25)
     parser.add_argument(
         "--min-per-member-group", dest="min_per_member_group", type=int, default=150
     )
@@ -38,7 +38,7 @@ def main():
         "--min-per-party-group", dest="min_per_party_group", type=int, default=3000
     )
     parser.add_argument(
-        "--max-per-party-group", dest="max_per_party_group", type=int, default=3000
+        "--max-per-party-group", dest="max_per_party_group", type=int, default=7500
     )
     parser.add_argument(
         "--doc2vec-minword", dest="doc2vec_minword", type=int, default=5
@@ -94,8 +94,9 @@ def main():
     for member_para_tuple in tqdm.tqdm(member_tagged_docs.items):
         member = member_para_tuple[0]
         paras = member_para_tuple[1]
+        content = "\n\n".join([p.content for p in paras])
         result = party_classifier_creator.predict(
-            "\n\n".join([p.content for p in paras])
+            content
         )
         member_results[member][result] += 1
     logger.info("Finished generating individual member results")
