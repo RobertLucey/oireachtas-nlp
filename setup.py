@@ -10,7 +10,9 @@ INSTALL_REQUIRES = (
     'nltk',
     'cached_property',
     'sklearn_pandas',
-    'tqdm'
+    'tqdm',
+    'textgenrnn',
+    'tensorflow==2.3.2'  # Required by textgenrnn
 )
 
 setup(
@@ -32,6 +34,8 @@ setup(
             'oir_sentiment = oireachtas_nlp.bin.sentiment:main',
             'oir_lexical_diversity = oireachtas_nlp.bin.lexical_diversity:main',
             'oir_lexical_difficulty = oireachtas_nlp.bin.lexical_difficulty:main',
+            'oir_generate_text = oireachtas_nlp.bin.generate_text:main',
+            'oir_generate_text_from_model = oireachtas_nlp.bin.generate_text_from_model:main',
         ]
     }
 )

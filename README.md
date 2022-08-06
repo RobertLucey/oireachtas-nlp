@@ -45,3 +45,6 @@ This shows how diverse the word usage is of members / parties.
 
 `oir_lexical_difficulty`
 This shows how difficult the language is of members / parties. Many methods of calculation available.
+
+`oir_generate_text`
+Generate sentences based on the content of a party / member. You can also give prefixes and have the sentence finished with generated text. TODO: With this is another command for pretrained models `oir_generate_text_from_model`

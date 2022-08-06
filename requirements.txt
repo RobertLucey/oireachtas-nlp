@@ -5,3 +5,5 @@ nltk
 cached_property
 sklearn_pandas
 tqdm
+textgenrnn
+tensorflow==2.3.2
