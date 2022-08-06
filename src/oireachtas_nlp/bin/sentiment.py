@@ -68,7 +68,7 @@ def main():
     pool = Pool(processes=multiprocessing.cpu_count() - 1)
     for res in tqdm.tqdm(
         pool.imap_unordered(get_sentiment, data.items()),
-        Gtotal=len(data)
+        total=len(data)
     ):
         results[res[0]] = res[1]
 
