@@ -1,14 +1,10 @@
 import argparse
-from collections import defaultdict
 
-import tqdm
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 
-from oireachtas_data import members
-from oireachtas_data.utils import iter_debates
-
 from oireachtas_nlp import logger
+from oireachtas_nlp.utils import get_speaker_para_map, get_party_para_map
 
 
 def main():
@@ -36,19 +32,11 @@ def main():
         nltk.download("vader_lexicon")
 
     if args.group_by == "member":
-
-        speaker_map = defaultdict(list)
         results = {}
-
-        for debate in tqdm.tqdm(iter_debates()):
-            for speaker, paras in debate.content_by_speaker.items():
-                if members.get_member_from_name(speaker) is None:
-                    continue
-                speaker_map[speaker].extend(paras)
 
         sia = SentimentIntensityAnalyzer()
 
-        for speaker, paras in tqdm.tqdm(speaker_map.items()):
+        for speaker, paras in get_speaker_para_map(only_groups=None).items():
             # TODO: multiprocess?
             if len(paras) < 10:
                 continue
@@ -64,20 +52,11 @@ def main():
             logger.info(f"{member.ljust(30)} {results[member]}")
 
     elif args.group_by == "party":
-        party_map = defaultdict(list)
         results = {}
-
-        for debate in tqdm.tqdm(iter_debates()):
-            for speaker, paras in debate.content_by_speaker.items():
-                parties = members.parties_of_member(speaker)
-                if parties is None or parties == []:
-                    continue
-                for party in parties:
-                    party_map[party].extend(paras)
 
         sia = SentimentIntensityAnalyzer()
 
-        for party, paras in tqdm.tqdm(party_map.items()):
+        for party, paras in get_party_para_map(only_items=None).items():
             # TODO: multiprocess?
             if len(paras) < 10:
                 continue
