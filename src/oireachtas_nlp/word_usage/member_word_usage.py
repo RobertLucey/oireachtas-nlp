@@ -1,7 +1,6 @@
 import tqdm
 
-from oireachtas_data.utils import get_speaker_para_map
-
+from oireachtas_nlp.utils import get_speaker_para_map
 from oireachtas_nlp import logger
 from oireachtas_nlp.word_usage.base_word_usage import BaseWordUsage
 
