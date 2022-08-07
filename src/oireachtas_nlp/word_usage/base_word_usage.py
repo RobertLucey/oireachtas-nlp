@@ -27,6 +27,7 @@ class BaseWordUsage:
         head_tail_len=5,
         min_paras_per_group=10,
         include_government_words=False,
+        only_all_others=False
     ):
         """
 
@@ -40,6 +41,7 @@ class BaseWordUsage:
         self.head_tail_len = head_tail_len
         self.min_paras_per_group = min_paras_per_group
         self.include_government_words = include_government_words
+        self.only_all_others = only_all_others
 
         self.groups = defaultdict(lambda: defaultdict(int))
         self.global_words = set()
@@ -95,13 +97,14 @@ class BaseWordUsage:
         perc_groups = defaultdict(lambda: defaultdict(int))
 
         logger.info("Setting group words stats")
-        for group_name in self.groups.keys():
-            group_count = sum(self.groups[group_name].values())
-            for word, count in self.groups[group_name].items():
-                if self.only_words and word not in self.only_words:
-                    continue
-                perc = (count / group_count) * 100
-                perc_groups[group_name][word] = perc
+        if not self.only_all_others:
+            for group_name in self.groups.keys():
+                group_count = sum(self.groups[group_name].values())
+                for word, count in self.groups[group_name].items():
+                    if self.only_words and word not in self.only_words:
+                        continue
+                    perc = (count / group_count) * 100
+                    perc_groups[group_name][word] = perc
 
         for base_group_name in self.groups.keys():
             other_groups = [k for k in self.groups.keys() if k != base_group_name]

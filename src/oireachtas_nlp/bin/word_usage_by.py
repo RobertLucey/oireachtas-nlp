@@ -46,6 +46,11 @@ def main():
         help="Include boring words like minister and deputy",
         action="store_true",
     )
+    parser.add_argument(
+        "--only-all-others",
+        dest="only_all_others",
+        action="store_true",
+    )
 
     args = parser.parse_args()
 
@@ -64,6 +69,7 @@ def main():
             head_tail_len=args.top_n,
             min_paras_per_group=args.min_paras_per_group,
             include_government_words=args.include_government_words,
+            only_all_others=args.only_all_others
         ).process()
     elif args.group_by == "party":
         PartyWordUsage(
@@ -72,6 +78,7 @@ def main():
             head_tail_len=args.top_n,
             min_paras_per_group=args.min_paras_per_group,
             include_government_words=args.include_government_words,
+            only_all_others=args.only_all_others
         ).process()
     else:
         raise ValueError('group-type must be one of "member" or "party"')
