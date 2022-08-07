@@ -32,7 +32,7 @@ Democratic_Left                0.022
 
 
 
-# --group-by party
+# --group-by member
 
 
 
