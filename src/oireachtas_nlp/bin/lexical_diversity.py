@@ -1,5 +1,7 @@
 import argparse
 
+from oireachtas_data import members
+
 from oireachtas_nlp import logger
 from oireachtas_nlp.models.para import ExtendedParas
 from oireachtas_nlp.utils import get_speaker_para_map, get_party_para_map
@@ -22,6 +24,10 @@ def main():
         for speaker, paras in get_speaker_para_map(only_groups=None).items():
             # TODO: multiprocess?
             if len(paras) < 10:
+                continue
+
+            member = members.get_member_from_name(speaker)
+            if member is None:
                 continue
 
             extended_paras = ExtendedParas(data=paras)
