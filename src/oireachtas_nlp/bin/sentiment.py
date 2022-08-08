@@ -8,6 +8,8 @@ import tqdm
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 
+from oireachtas_data import members
+
 from oireachtas_nlp import logger
 from oireachtas_nlp.utils import get_speaker_para_map, get_party_para_map
 
@@ -57,7 +59,17 @@ def main():
         nltk.download("vader_lexicon")
 
     if args.group_by == "member":
-        data = get_speaker_para_map(only_groups=None)
+        data = {}
+        for speaker, paras in get_speaker_para_map(only_groups=None).items():
+            if len(paras) < 100:
+                continue
+
+            member = members.get_member_from_name(speaker)
+            if member is None:
+                continue
+
+            data[speaker] = paras
+
     elif args.group_by == "party":
         data = get_party_para_map(only_groups=None)
 
