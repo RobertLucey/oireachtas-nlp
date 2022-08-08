@@ -5,7 +5,7 @@ Some natural language processing of the Dail and Seanad of individual members / 
 
 Here are some results of some of the features of this package. Some features cannot be shown as data in a file as they can be contextual:
 
-[What politician belongs / does not belong to their party](results/belong.md)
+[What politician looks like they belong / do not belong to their party](results/belong.md)
 
 [Lexical diversity of politicians / parties](results/lexical_diversity.md)
 

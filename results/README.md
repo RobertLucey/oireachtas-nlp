@@ -2,7 +2,7 @@
 
 Some of the other results can't be given as data in a file but here are some
 
-[What politician belongs / does not belong to their party](belong.md)
+[What politician looks like they belong / do not belong to their party](results/belong.md)
 
 [Lexical diversity of politicians / parties](lexical_diversity.md)
 
