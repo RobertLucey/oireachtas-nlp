@@ -5,10 +5,10 @@
 Green_Party |                   {'neg': 0.05, 'neu': 0.825, 'pos': 0.125, 'compound': 1.0}
 Fine_Gael |                     {'neg': 0.058, 'neu': 0.82, 'pos': 0.122, 'compound': 1.0}
 Progressive_Democrats |         {'neg': 0.054, 'neu': 0.824, 'pos': 0.122, 'compound': 1.0}
-Fianna_Fáil                    {'neg': 0.055, 'neu': 0.826, 'pos': 0.119, 'compound': 1.0}
+Fianna_Fáil |                   {'neg': 0.055, 'neu': 0.826, 'pos': 0.119, 'compound': 1.0}
 Independent |                   {'neg': 0.077, 'neu': 0.805, 'pos': 0.118, 'compound': 1.0}
 Labour_Party |                  {'neg': 0.062, 'neu': 0.822, 'pos': 0.117, 'compound': 1.0}
-Sinn_Féin                      {'neg': 0.078, 'neu': 0.809, 'pos': 0.114, 'compound': 1.0}
+Sinn_Féin |                     {'neg': 0.078, 'neu': 0.809, 'pos': 0.114, 'compound': 1.0}
 Democratic_Left |               {'neg': 0.084, 'neu': 0.801, 'pos': 0.114, 'compound': 1.0}
 Social_Democrats |              {'neg': 0.07, 'neu': 0.818, 'pos': 0.111, 'compound': 1.0}
 Workers_Party |                 {'neg': 0.052, 'neu': 0.837, 'pos': 0.11, 'compound': 1.0}
