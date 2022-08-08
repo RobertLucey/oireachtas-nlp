@@ -17,8 +17,8 @@ Installation
 
 `pip install oireachtas-nlp`
 
-Usage
-=====
+Preparing Data
+==============
 
 After installation run `pull_debates` for a while to get some data. Do this for as long as you want. The longer the better
 
