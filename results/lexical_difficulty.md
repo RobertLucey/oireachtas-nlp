@@ -6,7 +6,7 @@ Democratic_Left |               61.26
 Independent |                   60.55
 Social_Democrats |              60.14
 Sinn_Féin |                     60.04
-Anti-Austerity_Alliance_People_Before_Profit 59.94
+Anti-Austerity_Alliance_People_Before_Profit | 59.94
 Fine_Gael |                     59.33
 People_Before_Profit_Alliance | 59.03
 Fianna_Fáil |                   58.92

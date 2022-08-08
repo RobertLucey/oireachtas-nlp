@@ -12,8 +12,8 @@ Sinn_Féin |                     {'neg': 0.078, 'neu': 0.809, 'pos': 0.114, 'com
 Democratic_Left |               {'neg': 0.084, 'neu': 0.801, 'pos': 0.114, 'compound': 1.0}
 Social_Democrats |              {'neg': 0.07, 'neu': 0.818, 'pos': 0.111, 'compound': 1.0}
 Workers_Party |                 {'neg': 0.052, 'neu': 0.837, 'pos': 0.11, 'compound': 1.0}
-Sinn_Féin_the_Workers_Party    {'neg': 0.058, 'neu': 0.834, 'pos': 0.107, 'compound': 0.9999}
-Anti-Austerity_Alliance_People_Before_Profit {'neg': 0.097, 'neu': 0.809, 'pos': 0.094, 'compound': -1.0}
+Sinn_Féin_the_Workers_Party |   {'neg': 0.058, 'neu': 0.834, 'pos': 0.107, 'compound': 0.9999}
+Anti-Austerity_Alliance_People_Before_Profit | {'neg': 0.097, 'neu': 0.809, 'pos': 0.094, 'compound': -1.0}
 Socialist_Party |               {'neg': 0.103, 'neu': 0.806, 'pos': 0.091, 'compound': -1.0}
 People_Before_Profit_Alliance | {'neg': 0.108, 'neu': 0.804, 'pos': 0.088, 'compound': -1.0}
 

@@ -5,7 +5,7 @@
 Independent |                   0.031248
 Socialist_Party |               0.029608
 Sinn_Féin |                     0.029508
-Anti-Austerity_Alliance_People_Before_Profit 0.029164
+Anti-Austerity_Alliance_People_Before_Profit | 0.029164
 Fine_Gael |                     0.028888
 Fianna_Fáil |                   0.028708
 Labour_Party |                  0.028672
