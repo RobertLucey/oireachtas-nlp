@@ -14,6 +14,9 @@ class MemberTaggedDocs(BaseTaggedDocs):
 
     NAME = "member"
 
+    def __len__(self):
+        return len(self.items)
+
     def __iter__(self):
         for speaker, paras in self.items:
 
@@ -43,6 +46,9 @@ class MemberTaggedDocs(BaseTaggedDocs):
 class PartyTaggedDocs(BaseTaggedDocs):
 
     NAME = "party"
+
+    def __len__(self):
+        return len(self.items)
 
     def __iter__(self):
         for party, paras in self.items:
