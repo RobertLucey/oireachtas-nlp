@@ -59,6 +59,11 @@ def main():
     member_tagged_docs.load_tagged_docs()
     member_tagged_docs.clean_data()
 
+    if len(member_tagged_docs) == 0:
+        raise Exception('Not enough member data, load more debates or lower member thresholds')
+    else:
+        logger.info(f"Member tagged docs: {len(member_tagged_docs)}")
+
     party_tagged_docs = PartyTaggedDocs(
         min_per_group=args.min_per_party_group,
         max_per_group=args.max_per_party_group,
@@ -66,6 +71,11 @@ def main():
     )
     party_tagged_docs.load_tagged_docs()
     party_tagged_docs.clean_data()
+
+    if len(party_tagged_docs) == 0:
+        raise Exception('Not enough party data, load more debates or lower member thresholds')
+    else:
+        logger.info(f"Party tagged docs: {len(party_tagged_docs)}")
 
     # FIXME: Seems to do bad for when lots of people
 
