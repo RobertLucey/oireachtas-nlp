@@ -52,3 +52,29 @@ class UtilsTest(TestCase):
             ).sentences,
             ["This is the first sentence.", "This is the second one"],
         )
+
+    def test_quick_sentences(self):
+        self.assertEqual(
+            TextBody(
+                content="This is the first sentence. This is the second one"
+            ).quick_sentences,
+            ["This is the first sentence.", "This is the second one"],
+        )
+
+    def test_get_reading_difficulty(self):
+        self.assertLess(
+            TextBody(
+                content="incredibly difficult to understand"
+            ).get_reading_difficulty('flesch_reading_ease'),
+            TextBody(
+                content="how now brown cow"
+            ).get_reading_difficulty('flesch_reading_ease')
+        )
+
+    def test_word_count(self):
+        self.assertEqual(
+            TextBody(
+                content="incredibly difficult to understand"
+            ).word_count,
+            4
+        )
