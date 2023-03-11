@@ -17,7 +17,7 @@ INSTALL_REQUIRES = (
 
 setup(
     name='oireachtas-nlp',
-    version='1.0.13',
+    version='1.0.14',
     python_requires='>=3.6',
     description='nlp on data from the oireachtas api relating to members / parties',
     long_description='nlp on data from the oireachtas api relating to members / parties',
