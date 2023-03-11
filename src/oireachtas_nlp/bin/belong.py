@@ -23,9 +23,6 @@ def get_percentages(d):
 
 
 def main():
-    print('Warning: the member data is included in the party data so members with a lot of speech data will squeue. Don\'t trust this too much')
-    # TODO: only allow for doing per member and having the party they're in have the member's data removed so we can be accurate
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--epochs", dest="epochs", type=int, default=25)
     parser.add_argument(
