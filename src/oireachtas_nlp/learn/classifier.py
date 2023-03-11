@@ -43,7 +43,6 @@ class ClassifierCreator:
         self.class_group_map = {}
 
     def generate_classifier(self):
-
         logger.info("Using %s tagged docs" % (len(self.tagged_docs.items)))
 
         logger.info("Start loading content into model")

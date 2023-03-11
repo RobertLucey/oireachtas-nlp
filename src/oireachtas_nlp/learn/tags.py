@@ -11,7 +11,6 @@ from oireachtas_nlp.learn.base_tagged_docs import BaseTaggedDocs
 
 
 class MemberTaggedDocs(BaseTaggedDocs):
-
     NAME = "member"
 
     def __len__(self):
@@ -19,7 +18,6 @@ class MemberTaggedDocs(BaseTaggedDocs):
 
     def __iter__(self):
         for speaker, paras in self.items:
-
             if "%" in speaker:
                 continue
 
@@ -44,7 +42,6 @@ class MemberTaggedDocs(BaseTaggedDocs):
 
 
 class PartyTaggedDocs(BaseTaggedDocs):
-
     NAME = "party"
 
     def __len__(self):
@@ -52,7 +49,6 @@ class PartyTaggedDocs(BaseTaggedDocs):
 
     def __iter__(self):
         for party, paras in self.items:
-
             if party is None:
                 continue
 
@@ -85,7 +81,6 @@ class PartyTaggedDocs(BaseTaggedDocs):
             self.items.append((party, content))
 
     def clean_data(self) -> None:
-
         logger.info("Cleaning data")
 
         logger.info("Start removing groups with too little content")

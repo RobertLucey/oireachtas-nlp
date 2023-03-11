@@ -11,7 +11,6 @@ from oireachtas_nlp.learn.classifier import ClassifierCreator
 
 
 def main():
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--compare-file", dest="compare_file", type=str, required=True)
     parser.add_argument(

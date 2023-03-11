@@ -27,7 +27,7 @@ class BaseWordUsage:
         head_tail_len=5,
         min_paras_per_group=10,
         include_government_words=False,
-        only_all_others=False
+        only_all_others=False,
     ):
         """
 

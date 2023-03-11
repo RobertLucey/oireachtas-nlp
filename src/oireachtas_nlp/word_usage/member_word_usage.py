@@ -6,7 +6,6 @@ from oireachtas_nlp.word_usage.base_word_usage import BaseWordUsage
 
 
 class MemberWordUsage(BaseWordUsage):
-
     def process(self):
         logger.info("Getting words")
         speaker_map = get_speaker_para_map()

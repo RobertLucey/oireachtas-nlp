@@ -53,9 +53,7 @@ class BaseTaggedDocs(object):
 
         logger.info(f'Loading "{self.NAME}" tagged docs')
         for debate in tqdm.tqdm(iter_debates()):
-
             for speaker, paras in debate.content_by_speaker.items():
-
                 # TODO: map speakers to the pid "Bruce Wayne" -> "#BruceWayne"
 
                 # If we don't recognise the speaker then ignore
@@ -97,7 +95,6 @@ class BaseTaggedDocs(object):
 
     def __iter__(self):
         for speaker, paras in self.items:
-
             body = TextBody(content="\n\n".join([p.content for p in paras]))
             yield TaggedDocument(
                 body.content.split(), [str(speaker + "_%s") % (self.counter[speaker])]

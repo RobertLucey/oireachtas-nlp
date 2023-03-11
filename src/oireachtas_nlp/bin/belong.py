@@ -57,7 +57,9 @@ def main():
     member_tagged_docs.clean_data()
 
     if len(member_tagged_docs) == 0:
-        raise Exception('Not enough member data, load more debates or lower member thresholds')
+        raise Exception(
+            "Not enough member data, load more debates or lower member thresholds"
+        )
     else:
         logger.info(f"Member tagged docs: {len(member_tagged_docs)}")
 
@@ -70,7 +72,9 @@ def main():
     party_tagged_docs.clean_data()
 
     if len(party_tagged_docs) == 0:
-        raise Exception('Not enough party data, load more debates or lower member thresholds')
+        raise Exception(
+            "Not enough party data, load more debates or lower member thresholds"
+        )
     else:
         logger.info(f"Party tagged docs: {len(party_tagged_docs)}")
 
@@ -102,9 +106,7 @@ def main():
         member = member_para_tuple[0]
         paras = member_para_tuple[1]
         content = "\n\n".join([p.content for p in paras])
-        result = party_classifier_creator.predict(
-            content
-        )
+        result = party_classifier_creator.predict(content)
         member_results[member][result] += 1
     logger.info("Finished generating individual member results")
 

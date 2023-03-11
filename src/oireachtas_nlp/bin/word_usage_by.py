@@ -5,7 +5,6 @@ from oireachtas_nlp.word_usage.party_word_usage import PartyWordUsage
 
 
 def main():
-
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--min-paras-per-group",
@@ -69,7 +68,7 @@ def main():
             head_tail_len=args.top_n,
             min_paras_per_group=args.min_paras_per_group,
             include_government_words=args.include_government_words,
-            only_all_others=args.only_all_others
+            only_all_others=args.only_all_others,
         ).process()
     elif args.group_by == "party":
         PartyWordUsage(
@@ -78,7 +77,7 @@ def main():
             head_tail_len=args.top_n,
             min_paras_per_group=args.min_paras_per_group,
             include_government_words=args.include_government_words,
-            only_all_others=args.only_all_others
+            only_all_others=args.only_all_others,
         ).process()
     else:
         raise ValueError('group-type must be one of "member" or "party"')

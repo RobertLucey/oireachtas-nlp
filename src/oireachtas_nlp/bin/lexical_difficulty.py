@@ -8,7 +8,6 @@ from oireachtas_nlp.utils import get_speaker_para_map, get_party_para_map
 
 
 def main():
-
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--group-by",

@@ -22,7 +22,7 @@ class TextBody:
 
     @property
     def quick_sentences(self):
-        return re.split('(?<=[.!?]) +', self.content)
+        return re.split("(?<=[.!?]) +", self.content)
 
     def get_reading_difficulty(self, method):
         return getattr(textstat, method)(self.content)
