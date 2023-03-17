@@ -5,7 +5,7 @@ from gensim.models.doc2vec import TaggedDocument
 from oireachtas_data import members
 
 from oireachtas_nlp import logger
-from oireachtas_nlp.utils import flatten
+from oireachtas_nlp.utils import flatten, sample
 from oireachtas_nlp.models.text import TextBody
 from oireachtas_nlp.learn.base_tagged_docs import BaseTaggedDocs
 
@@ -98,7 +98,7 @@ class PartyTaggedDocs(BaseTaggedDocs):
         for item in self.items:
             group_items_map[item[0]].append(item)
         self.items = flatten(
-            [v[0 : self.max_per_group] for k, v in group_items_map.items()]
+            [sample(v, self.max_per_group) for k, v in group_items_map.items()]
         )
         logger.info("Finished limiting the number of items per group")
 

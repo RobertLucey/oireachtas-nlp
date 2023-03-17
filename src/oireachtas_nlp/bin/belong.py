@@ -48,10 +48,27 @@ def main():
     )
     parser.add_argument("--train-ratio", dest="train_ratio", type=int, default=0.8)
 
+    members.load()
+
+    parser.add_argument(
+        "--member-pid",
+        dest="member_pid",
+        type=str,
+        choices=set([d.pid for d in members.data if d.pid]),
+        default=None,
+    )
+
     args = parser.parse_args()
 
+    if not args.member_pid:
+        logger.warning(
+            "--member-pid is not specified so each member will likely have some data included in the train set for the party. The paragraphs used in testing the association with a party will not be included in the party training data"
+        )
+
     member_tagged_docs = MemberTaggedDocs(
-        min_per_group=args.min_per_member_group, max_per_group=args.max_per_member_group
+        min_per_group=args.min_per_member_group,
+        max_per_group=args.max_per_member_group,
+        only_member_pids=[args.member_pid] if args.member_pid else [],
     )
     member_tagged_docs.load_tagged_docs()
     member_tagged_docs.clean_data()
@@ -67,6 +84,7 @@ def main():
         min_per_group=args.min_per_party_group,
         max_per_group=args.max_per_party_group,
         exclude_para_hashes=member_tagged_docs.get_para_hashes(),  # Don't allow paras we will be predicting to be in training
+        exclude_member_pids=[args.member_pid] if args.member_pid else [],
     )
     party_tagged_docs.load_tagged_docs()
     party_tagged_docs.clean_data()
@@ -106,7 +124,7 @@ def main():
         member = member_para_tuple[0]
         paras = member_para_tuple[1]
         content = "\n\n".join([p.content for p in paras])
-        result = party_classifier_creator.predict(content)
+        result, score = party_classifier_creator.predict(content)
         member_results[member][result] += 1
     logger.info("Finished generating individual member results")
 
@@ -128,17 +146,22 @@ def main():
         percs = get_percentages(results)
 
         most_likely = Counter(percs).most_common()[0][0]
-        # most likely could also be second most likely
+        percentages = {
+            k: round(v, 2)
+            for k, v in dict(
+                sorted(percs.items(), key=lambda x: x[1], reverse=True)
+            ).items()
+        }
 
         # FIXME: ugly
         actual = parties[0].replace("_", "")
 
         if most_likely != actual:
-            logger.info(
-                f"{member} looks like they belong to {most_likely} but actually belong to {actual}"
+            logger.warning(
+                f"{member} looks like they belong to {most_likely} but actually belong to {actual}. Confidence: {percentages}"
             )
         else:
-            logger.info(f"{member} belongs to {actual}")
+            logger.info(f"{member} belongs to {actual}. Confidence: {percentages}")
 
 
 if __name__ == "__main__":

@@ -56,7 +56,7 @@ class ClassifierCreator:
             total_examples=self.model.corpus_count,
             epochs=self.epochs,
         )
-        print("Finished training model")
+        logger.info("Finished training model")
 
         grouped_vecs = defaultdict(list)
         for tag in self.model.docvecs.key_to_index.keys():
@@ -64,7 +64,7 @@ class ClassifierCreator:
                 continue
             grouped_vecs[tag.split("_")[0]].append(int(tag.split("_")[1]))
 
-        print("Creating train/test set")
+        logger.info("Creating train/test set")
         (
             train_arrays,
             train_labels,
@@ -77,16 +77,15 @@ class ClassifierCreator:
             equalize_group_contents=self.equalize_group_contents,
             train_ratio=self.train_ratio,
         )
-        print("Created train/test set")
+        logger.info("Created train/test set")
 
         classifiers = get_classifiers()
 
         for name, clf in classifiers.items():
             try:
-                print("----------")
                 clf.fit(train_arrays, train_labels)
                 score = clf.score(test_arrays, test_labels)
-                print("%s %s" % (name, score))
+                logger.info("%s %s" % (name, score))
 
                 joined = [i for i in zip(test_labels, test_arrays)]
                 class_arrays_map = defaultdict(list)
@@ -95,13 +94,11 @@ class ClassifierCreator:
 
                 for label, array in class_arrays_map.items():
                     score = clf.score(np.array(array), len(array) * [label])
-                    print("%s %s" % (class_group_map[label], score))
-
-                print("----------")
+                    logger.info("%s %s" % (class_group_map[label], score))
 
                 classifiers[name] = clf
             except ValueError as ex:
-                print('Failed to use classifier "%s": %s' % (name, ex))
+                logger.info('Failed to use classifier "%s": %s' % (name, ex))
                 classifiers[name] = None
 
         self.classifiers = classifiers
@@ -111,8 +108,11 @@ class ClassifierCreator:
         self.preferred_classifier = self.classifiers["nnclassifier"]
 
     def predict(self, content: str):
-        return self.class_group_map[
-            self.preferred_classifier.predict(
-                [self.model.infer_vector(content.split())]
-            )[0]
-        ]
+        result = self.preferred_classifier.predict_proba(
+            [self.model.infer_vector(content.split())]
+        )[0]
+
+        max_score = max(result.tolist())
+        max_idx = result.tolist().index(max_score)
+
+        return self.class_group_map[max_idx], max_score

@@ -10,7 +10,7 @@ from oireachtas_data.utils import iter_debates
 
 from oireachtas_nlp import logger
 from oireachtas_nlp.models.text import TextBody
-from oireachtas_nlp.utils import flatten
+from oireachtas_nlp.utils import flatten, sample
 
 
 class BaseTaggedDocs(object):
@@ -20,12 +20,22 @@ class BaseTaggedDocs(object):
         max_per_group=100,
         exclude_para_hashes=None,
         min_content_len=5000,
+        only_member_pids=None,
+        exclude_member_pids=None,
     ):
         """
 
         :kwarg min_per_group: The minimum required items for the
             entire tag / group to be processed
         """
+        if not only_member_pids:
+            only_member_pids = []
+        self.only_member_pids = only_member_pids
+
+        if not exclude_member_pids:
+            exclude_member_pids = []
+        self.exclude_member_pids = exclude_member_pids
+
         self.items = []
         self.docs = []
         self.counter = defaultdict(int)
@@ -59,6 +69,11 @@ class BaseTaggedDocs(object):
                 # If we don't recognise the speaker then ignore
                 member = members.get_member_from_name(speaker)
                 if member is None:
+                    continue
+
+                if self.only_member_pids and member.pid not in self.only_member_pids:
+                    continue
+                if self.exclude_member_pids and member.pid in self.exclude_member_pids:
                     continue
 
                 if speaker == "#":
@@ -129,7 +144,7 @@ class BaseTaggedDocs(object):
         for item in self.items:
             group_items_map[self.get_group_name(item)].append(item)
         self.items = flatten(
-            [v[0 : self.max_per_group] for k, v in group_items_map.items()]
+            [sample(v, self.max_per_group) for k, v in group_items_map.items()]
         )
         logger.info("Finished limiting the number of items per group")
 
