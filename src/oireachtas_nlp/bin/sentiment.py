@@ -11,22 +11,21 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 from oireachtas_data import members
 
 from oireachtas_nlp import logger
-from oireachtas_nlp.utils import get_speaker_para_map, get_party_para_map
+from oireachtas_nlp.utils import get_speaker_para_map, get_party_para_map, sample
 
 
 sia = SentimentIntensityAnalyzer()
 
 
-def get_sentiment(item):
-    if len(item[1]) < 5000:
-        return (item[0], sia.polarity_scores("\n\n".join([p.content for p in item[1]])))
-    else:
-        return (
-            item[0],
-            sia.polarity_scores(
-                "\n\n".join(random.sample([p.content for p in item[1]], 5000))
-            ),
-        )
+def get_sentiment(data):
+    sample_size, item = data
+    paras = sample(item[1], sample_size)
+    return (
+        item[0],
+        sia.polarity_scores(
+            "\n\n".join([p.content for p in paras])
+        ),
+    )
 
 
 def main():
@@ -44,6 +43,13 @@ def main():
         type=str,
         required=True,
         choices=["neg", "pos", "neu"],
+    )
+    parser.add_argument(
+        "--sample-size",
+        dest="sample_size",
+        type=int,
+        default=2500,
+        help='How many paragraph samples to take from each group'
     )
     args = parser.parse_args()
 
@@ -73,7 +79,7 @@ def main():
 
     pool = Pool(processes=multiprocessing.cpu_count() - 1)
     for res in tqdm.tqdm(
-        pool.imap_unordered(get_sentiment, data.items()), total=len(data)
+        pool.imap_unordered(get_sentiment, [(args.sample_size, d) for d in data.items()]), total=len(data)
     ):
         results[res[0]] = res[1]
 
