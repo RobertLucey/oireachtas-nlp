@@ -1,3 +1,4 @@
+import random
 from itertools import chain
 from collections import defaultdict
 
@@ -45,3 +46,11 @@ def get_party_para_map(only_groups=None):
                 party_map[party].extend(paras)
 
     return party_map
+
+
+def sample(values, k):
+    random.shuffle(values)
+    try:
+        return random.sample(values, k)
+    except ValueError:
+        return values

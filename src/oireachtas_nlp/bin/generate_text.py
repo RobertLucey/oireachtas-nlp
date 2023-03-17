@@ -1,7 +1,8 @@
+import os
 import argparse
-from random import sample
+from random import shuffle
 
-from textgenrnn import textgenrnn
+import gpt_2_simple as gpt2
 
 from oireachtas_nlp import logger
 from oireachtas_nlp.models.para import ExtendedParas
@@ -18,12 +19,6 @@ def main():
         choices=["member", "party"],
     )
     parser.add_argument(
-        "--prefix",
-        dest="prefix",
-        type=str,
-        help="What text to start a sentence with. Generated text will continue the sentence",
-    )
-    parser.add_argument(
         "--only-groups",
         dest="only_groups",
         help="a csv of groups (party name / member name) to exclusively look for",
@@ -33,77 +28,76 @@ def main():
         "--sample",
         dest="sample",
         type=int,
-        default=1000,
+        default=10000,
         help="How many sentences of each group to sample",
     )
     parser.add_argument("--num-epochs", dest="num_epochs", type=int, default=50)
+    parser.add_argument("--shuffle", dest="shuffle", action="store_true")
     parser.add_argument(
-        "--generate-temp",
-        dest="generate_temp",
-        type=float,
-        default=0.5,
-        help="What temperature between 0 and 1 to generate text at (higher is more... creative)",
+        "--model", dest="model", default="124M", choices={"124M", "355M"}
     )
-    parser.add_argument(
-        "--num-print-per-group",
-        dest="num_print_per_group",
-        type=int,
-        default=100,
-        help="How many lines to generate for each group",
-    )
+
     args = parser.parse_args()
+
+    # also group by general all text and bill types. Would be better for context
 
     only_groups = None
     if args.only_groups is not None:
         only_groups = args.only_groups.split(",")
 
-    if args.group_by == "party":
-        for party, paras in get_party_para_map(only_groups=only_groups).items():
+    if args.group_by == "party" or args.group_by == "member":
+        group_filter = (
+            get_party_para_map if args.group_by == "party" else get_speaker_para_map
+        )
+        for subject, paras in group_filter(only_groups=only_groups).items():
+
+            subject = subject.replace('á', 'a')
+
+            print(f"Process: {subject}")
+
             extended_paras = ExtendedParas(data=paras)
             texts = extended_paras.text_obj.quick_sentences
 
+            if len(texts) < 500:
+                # Ignore without comment to reduce noise
+                continue
+
             if len(texts) < args.sample:
                 logger.warning(
-                    f"{party} has too few sentences to process. Consider lowering --sample"
+                    f"{subject} has too few sentences to process. Consider lowering --sample"
                 )
                 continue
 
-            texts = sample(texts, args.sample)
+            if args.shuffle:
+                shuffle(texts)
 
-            logger.info(f"Begin training: {party}")
+            texts = texts[: args.sample]
 
-            textgen = textgenrnn()
-            textgen.train_on_texts(texts, num_epochs=args.num_epochs)
-            textgen.generate(
-                n=args.num_print_per_group,
-                prefix=args.prefix,
-                temperature=args.generate_temp,
-                progress=False,
+            file_text = "\n".join(texts)
+
+            text_file_path = f"/tmp/{subject}.txt"
+            with open(text_file_path, "w") as f:
+                f.write(file_text)
+
+            logger.info(f"Begin training: {subject}")
+
+            model_dir = f"models_{subject}"
+            if not os.path.isdir(model_dir):
+                gpt2.download_gpt2(model_dir=model_dir, model_name=args.model)
+
+            sess = gpt2.start_tf_sess()
+            gpt2.finetune(
+                sess,
+                text_file_path,
+                model_name=args.model,
+                model_dir=model_dir,
+                steps=args.num_epochs,
             )
+
+            gpt2.generate(sess)
 
     else:
-        for speaker, paras in get_speaker_para_map(only_groups=only_groups).items():
-            extended_paras = ExtendedParas(data=paras)
-            texts = extended_paras.text_obj.quick_sentences
-
-            if len(texts) < args.sample:
-                logger.warning(
-                    f"{speaker} has too few sentences to process. Consider lowering --sample"
-                )
-                continue
-
-            texts = sample(texts, args.sample)
-
-            logger.info(f"Begin training: {speaker}")
-
-            textgen = textgenrnn()
-            textgen.train_on_texts(texts, num_epochs=args.num_epochs)
-            textgen.generate(
-                n=args.num_print_per_group,
-                prefix=args.prefix,
-                temperature=args.generate_temp,
-                progress=False,
-            )
+        raise Exception(f"Cannot group by {args.group_by}")
 
 
 if __name__ == "__main__":

@@ -5,5 +5,4 @@ nltk
 cached_property
 sklearn_pandas
 tqdm
-textgenrnn
-tensorflow
+gpt_2_simple

@@ -12,7 +12,7 @@ INSTALL_REQUIRES = (
     'sklearn_pandas',
     'tqdm',
     'textgenrnn',
-    'tensorflow'  # Required by textgenrnn
+    'gpt_2_simple'
 )
 
 setup(
