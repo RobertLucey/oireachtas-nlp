@@ -3,18 +3,6 @@ Oireachtas Data NLP
 
 Some natural language processing of the Dail and Seanad of individual members / political parties. Do things like see the difference between the words people/parties use along with predicting what political party a person will align with given a sample of their speech.
 
-Here are some results of some of the features of this package. Some features cannot be shown as data in a file as they can be contextual:
-
-[What politician looks like they belong / do not belong to their party](results/belong.md)
-
-[Lexical diversity of politicians / parties](results/lexical_diversity.md)
-
-[Lexical difficulty of politicians / parties](results/lexical_difficulty.md)
-
-[Word frequency comparison of politicians / parties](results/word_usage_by.md)
-
-[Sentiment of politicians / parties](results/sentiment.md)
-
 
 Dependencies
 ============
