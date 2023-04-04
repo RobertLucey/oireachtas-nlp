@@ -103,8 +103,11 @@ class BaseWordUsage:
                 for word, count in self.groups[group_name].items():
                     if self.only_words and word not in self.only_words:
                         continue
-                    perc = (count / group_count) * 100
-                    perc_groups[group_name][word] = perc
+                    try:
+                        perc = (count / group_count) * 100
+                        perc_groups[group_name][word] = perc
+                    except:
+                        continue
 
         for base_group_name in self.groups.keys():
             other_groups = [k for k in self.groups.keys() if k != base_group_name]
