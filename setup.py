@@ -28,8 +28,8 @@ setup(
     install_requires=INSTALL_REQUIRES,
     entry_points={
         'console_scripts': [
-            'oir_word_usage_by = oireachtas_nlp.bin.sounds_like:main',
-            'oir_sounds_like = oireachtas_nlp.bin.word_usage_by:main',
+            'oir_word_usage_by = oireachtas_nlp.bin.word_usage_by:main',
+            'oir_sounds_like = oireachtas_nlp.bin.sounds_like:main',
             'oir_belong = oireachtas_nlp.bin.belong:main',
             'oir_sentiment = oireachtas_nlp.bin.sentiment:main',
             'oir_lexical_diversity = oireachtas_nlp.bin.lexical_diversity:main',
