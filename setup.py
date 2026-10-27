@@ -5,6 +5,7 @@ from setuptools import (
 
 INSTALL_REQUIRES = (
     'oireachtas_data<0.2.0',
+    'setuptools<82',  # oireachtas_data imports pkg_resources at runtime.
     'textstat',
     'gensim',
     'nltk',
