@@ -4,7 +4,7 @@ from setuptools import (
 )
 
 INSTALL_REQUIRES = (
-    'oireachtas_data',
+    'oireachtas_data<0.2.0',
     'textstat',
     'gensim',
     'nltk',
@@ -17,7 +17,7 @@ INSTALL_REQUIRES = (
 
 setup(
     name='oireachtas-nlp',
-    version='1.0.16',
+    version='1.0.17',
     python_requires='>=3.6',
     description='nlp on data from the oireachtas api relating to members / parties',
     long_description='nlp on data from the oireachtas api relating to members / parties',
